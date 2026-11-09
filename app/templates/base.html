@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Privacy-Preserving Cardiovascular Disease Classification{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts for clean typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-brand">
+                <span class="heart-icon">🫀</span>
+                <span class="brand-text"><strong>FedAMI</strong> | Privacy-Preserving CVD Classification</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Overview</a></li>
+                <li><a href="{{ url_for('predict') }}" class="{% if request.endpoint == 'predict' %}active{% endif %}">Clinical Inference</a></li>
+                <li><a href="{{ url_for('comparison') }}" class="{% if request.endpoint == 'comparison' %}active{% endif %}">Model Benchmarks</a></li>
+                <li><a href="{{ url_for('federated') }}" class="{% if request.endpoint == 'federated' %}active{% endif %}">Federated Network</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Academic Disclaimer Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="disclaimer-banner">
+                <strong>Academic Research Prototype:</strong> This software is developed strictly for academic demonstration and federated learning research. It is not approved by medical regulatory authorities and must not be used as a substitute for professional clinical judgment, diagnosis, or treatment planning.
+            </div>
+            <div class="footer-meta">
+                <p>MIMIC-IV v3.1 Cohort &bull; Federated Averaging (FedAvg) &bull; Distributed Privacy Preservation</p>
+                <p>&copy; 2026 Academic Capstone Project. All research evaluations performed on held-out patient cohorts.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

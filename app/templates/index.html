@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Privacy-Preserving AMI Classification Using Federated Learning{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-badge">Distributed Privacy-Preserving Clinical AI</div>
+    <h1 class="hero-title">Privacy-Preserving Cardiovascular Disease Classification Using Federated Learning</h1>
+    <p class="hero-subtitle">
+        Collaborative machine learning for Acute Myocardial Infarction (AMI) classification using high-frequency intensive care vital signs, preserving patient privacy through Federated Averaging (FedAvg) across decentralized hospital cohorts.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ url_for('predict') }}" class="btn btn-primary">Try Clinical Inference &rarr;</a>
+        <a href="{{ url_for('federated') }}" class="btn btn-secondary">Explore Federated Network</a>
+        <a href="{{ url_for('comparison') }}" class="btn btn-outline">View Model Benchmarks</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Key Metrics / Highlights Grid -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">68.75%</div>
+            <div class="metric-label">Federated Accuracy</div>
+            <div class="metric-desc">Matches centralized performance with zero raw data sharing.</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Data Privacy</div>
+            <div class="metric-desc">Only parameter gradients leave client hospitals; patient records stay local.</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">3</div>
+            <div class="metric-label">Simulated Hospitals</div>
+            <div class="metric-desc">Decentralized nodes evaluated under both IID and Non-IID clinical distributions.</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">24 Hours</div>
+            <div class="metric-label">Observation Window</div>
+            <div class="metric-desc">Standardized early vital sign window preventing lookahead data leakage.</div>
+        </div>
+    </div>
+
+    <!-- Core Sections -->
+    <div class="grid-2-col">
+        <!-- Section 1: The Problem & Clinical Motivation -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🏥</span>
+                <h3>The Challenge in Healthcare AI</h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    Acute Myocardial Infarction (AMI) is a life-threatening cardiovascular emergency requiring rapid recognition. Modern clinical machine learning models require large, diverse patient datasets to achieve generalizable diagnostic performance.
+                </p>
+                <p>
+                    However, patient medical records are strictly protected by data privacy regulations (e.g. <strong>HIPAA</strong>, <strong>GDPR</strong>). Hospitals cannot pool their raw Electronic Health Records (EHR) into a central repository due to legal, privacy, and institutional security restrictions.
+                </p>
+                <div class="callout warning">
+                    <strong>Isolated Hospital Bottleneck:</strong> Individual hospitals with small cohorts train models that overfit and fail on external populations (e.g., our Hospital B baseline achieved only 31.25% accuracy alone).
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: The Federated Learning Solution -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🛡️</span>
+                <h3>The Federated Learning Solution (FedAvg)</h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    Federated Learning replaces centralized data pooling with <strong>distributed collaborative model training</strong>:
+                </p>
+                <ol class="workflow-steps">
+                    <li><strong>Global Initialization:</strong> Central server initializes model parameters $(W, b)$.</li>
+                    <li><strong>Parameter Broadcast:</strong> The server sends model weights to participating hospitals.</li>
+                    <li><strong>Private Local Training:</strong> Each hospital trains locally on its private ICU vitals.</li>
+                    <li><strong>Update Aggregation:</strong> Hospitals transmit only parameter updates back.</li>
+                    <li><strong>Federated Averaging:</strong> The server computes sample-weighted averages:
+                        $$W_{t+1} = \sum_{k} \frac{n_k}{N} W_k^{(t)}$$
+                    </li>
+                </ol>
+                <div class="callout success">
+                    <strong>Privacy Guarantee:</strong> Raw patient records never leave the hospital firewall.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset & Pipeline Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <span class="card-icon">📊</span>
+            <h3>MIMIC-IV v3.1 Clinical Dataset Architecture</h3>
+        </div>
+        <div class="card-body">
+            <div class="grid-3-col">
+                <div class="feature-box">
+                    <h4>Cohort Derivation</h4>
+                    <p>Rigorous patient selection from MIMIC-IV v3.1 identifying AMI diagnoses via ICD-9 code <code>410</code> and ICD-10 codes <code>I21–I22</code> with perfectly balanced positive and control cohorts.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Vital Signs Evaluated</h4>
+                    <p>High-frequency physiological monitoring: Heart Rate (HR), Systolic BP (SBP), Diastolic BP (DBP), and Pulse Oximetry (SpO₂), reconciled across arterial catheter and non-invasive cuff monitors.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Strict Leakage Prevention</h4>
+                    <p>Strict 24-hour observation window from first vital recording. Fixed-length statistical feature vectors (mean, min, max, std, range, first, last, trend, count, shock index) computed per patient.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

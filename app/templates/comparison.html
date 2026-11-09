@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Model Benchmarks | Privacy-Preserving AMI Classification{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Empirical Model Benchmarks & Paradigm Comparison</h2>
+        <p>Comprehensive academic performance evaluation across centralized machine learning models, isolated local hospital models, and collaborative federated global models on held-out patient cohorts.</p>
+    </div>
+
+    <!-- Paradigm Comparison Table (Centralized vs Federated vs Local) -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <span class="card-icon">⚖️</span>
+            <h3>1. Paradigm Comparison: Centralized vs Federated vs Isolated Hospitals</h3>
+        </div>
+        <div class="card-body">
+            <p class="section-desc">Evaluates whether collaborative Federated Learning can achieve accuracy comparable to pooled centralized training without sharing raw patient data.</p>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Training Strategy</th>
+                            <th>Privacy Level</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall (Sens.)</th>
+                            <th>Specificity</th>
+                            <th>F1-Score</th>
+                            <th>ROC-AUC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in paradigm_data %}
+                        <tr class="{% if 'Federated' in row['Setup'] %}highlight-row{% endif %}">
+                            <td><strong>{{ row['Setup'] }}</strong></td>
+                            <td><span class="badge {% if 'High' in row['Privacy Level'] %}badge-success{% elif 'None' in row['Privacy Level'] %}badge-danger{% else %}badge-warning{% endif %}">{{ row['Privacy Level'] }}</span></td>
+                            <td>{{ (row['Accuracy']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Precision']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Recall']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Specificity']|float * 100)|round(2) }}%</td>
+                            <td>{{ row['F1-Score']|round(4) }}</td>
+                            <td>{{ row['ROC-AUC']|round(4) if row['ROC-AUC'] else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout success mt-3">
+                <strong>Empirical Finding:</strong> The Federated Global Model (FedAvg) achieves <strong>68.75% accuracy (0.7188 ROC-AUC)</strong> under IID conditions and <strong>75.00% accuracy</strong> under Non-IID conditions, matching or exceeding Centralized training while providing 100% data residency privacy for each hospital.
+            </div>
+        </div>
+    </div>
+
+    <!-- Centralized Algorithms Table -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <span class="card-icon">🧠</span>
+            <h3>2. Centralized Machine Learning Algorithms Benchmark</h3>
+        </div>
+        <div class="card-body">
+            <p class="section-desc">Comparison of 6 standard Scikit-learn algorithms tuned via 5-Fold Stratified Cross-Validation on training data and tested on the held-out patient cohort.</p>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Model Architecture</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>Specificity</th>
+                            <th>F1-Score</th>
+                            <th>ROC-AUC</th>
+                            <th>TN</th>
+                            <th>FP</th>
+                            <th>FN</th>
+                            <th>TP</th>
+                            <th>Train Time (s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in centralized_data %}
+                        <tr>
+                            <td><strong>{{ row['Model'] }}</strong></td>
+                            <td>{{ (row['Accuracy']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Precision']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Recall (Sens.)']|float * 100)|round(2) }}%</td>
+                            <td>{{ (row['Specificity']|float * 100)|round(2) }}%</td>
+                            <td>{{ row['F1-Score'] }}</td>
+                            <td>{{ row['ROC-AUC'] }}</td>
+                            <td>{{ row['TN'] }}</td>
+                            <td>{{ row['FP'] }}</td>
+                            <td>{{ row['FN'] }}</td>
+                            <td>{{ row['TP'] }}</td>
+                            <td>{{ row['Train Time (s)'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generated Visualizations Gallery -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <span class="card-icon">🖼️</span>
+            <h3>3. Empirical Evaluation Figures & Diagnostic Plots</h3>
+        </div>
+        <div class="card-body">
+            <div class="figures-grid">
+                <div class="figure-card">
+                    <h4>Receiver Operating Characteristic (ROC) Curves</h4>
+                    <img src="{{ url_for('static', filename='figures/roc_curves_comparison.png') }}" alt="ROC Curves Comparison" class="img-responsive">
+                    <p class="figure-caption">Comparison of trade-off between sensitivity and specificity across centralized models on held-out test data.</p>
+                </div>
+
+                <div class="figure-card">
+                    <h4>Centralized Models Accuracy & Metric Comparison</h4>
+                    <img src="{{ url_for('static', filename='figures/centralized_models_comparison.png') }}" alt="Model Comparison" class="img-responsive">
+                    <p class="figure-caption">Grouped performance comparison across Accuracy, Precision, Recall, F1, and ROC-AUC.</p>
+                </div>
+
+                <div class="figure-card">
+                    <h4>Confusion Matrices Grid</h4>
+                    <img src="{{ url_for('static', filename='figures/confusion_matrices_grid.png') }}" alt="Confusion Matrices" class="img-responsive">
+                    <p class="figure-caption">Exact True Positive, True Negative, False Positive, and False Negative counts per algorithm.</p>
+                </div>
+
+                <div class="figure-card">
+                    <h4>Centralized vs Federated vs Local Hospital Comparison</h4>
+                    <img src="{{ url_for('static', filename='figures/centralized_vs_federated_vs_local.png') }}" alt="Paradigm Comparison" class="img-responsive">
+                    <p class="figure-caption">Demonstrates the marked accuracy drop of isolated hospital training vs collaborative FedAvg.</p>
+                </div>
+
+                <div class="figure-card">
+                    <h4>Feature Importance — Random Forest</h4>
+                    <img src="{{ url_for('static', filename='figures/feature_importance_random_forest.png') }}" alt="Random Forest Feature Importance" class="img-responsive">
+                    <p class="figure-caption">Top physiological predictors identified by Mean Decrease in Impurity (Gini importance).</p>
+                </div>
+
+                <div class="figure-card">
+                    <h4>Feature Importance — Gradient Boosting</h4>
+                    <img src="{{ url_for('static', filename='figures/feature_importance_gradient_boosting.png') }}" alt="Gradient Boosting Feature Importance" class="img-responsive">
+                    <p class="figure-caption">Relative feature influence in sequential boosted decision stumps.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

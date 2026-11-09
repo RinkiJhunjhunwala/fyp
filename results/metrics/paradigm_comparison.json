@@ -1,0 +1,62 @@
+[
+  {
+    "Setup": "Centralized Logistic Regression (Pooled Data)",
+    "Privacy Level": "None (Data Centralized)",
+    "Accuracy": 0.6875,
+    "Precision": 0.7142857142857143,
+    "Recall": 0.625,
+    "Specificity": 0.75,
+    "F1-Score": 0.6666666666666666,
+    "ROC-AUC": 0.71875
+  },
+  {
+    "Setup": "Federated Global Model (FedAvg - IID)",
+    "Privacy Level": "High (Parameters Only, No Raw Data)",
+    "Accuracy": 0.6875,
+    "Precision": 0.6666666666666666,
+    "Recall": 0.75,
+    "Specificity": 0.625,
+    "F1-Score": 0.7058823529411765,
+    "ROC-AUC": 0.71875
+  },
+  {
+    "Setup": "Federated Global Model (FedAvg - Non-IID)",
+    "Privacy Level": "High (Parameters Only, No Raw Data)",
+    "Accuracy": 0.75,
+    "Precision": 0.75,
+    "Recall": 0.75,
+    "Specificity": 0.625,
+    "F1-Score": 0.75,
+    "ROC-AUC": 0.75
+  },
+  {
+    "Setup": "Local Hospital A Only (Isolated)",
+    "Privacy Level": "Isolated (Single Hospital Only)",
+    "Accuracy": 0.625,
+    "Precision": 0.6666666666666666,
+    "Recall": 0.5,
+    "Specificity": 0.75,
+    "F1-Score": 0.5714285714285714,
+    "ROC-AUC": 0.578125
+  },
+  {
+    "Setup": "Local Hospital B Only (Isolated)",
+    "Privacy Level": "Isolated (Single Hospital Only)",
+    "Accuracy": 0.3125,
+    "Precision": 0.3333333333333333,
+    "Recall": 0.375,
+    "Specificity": 0.25,
+    "F1-Score": 0.35294117647058826,
+    "ROC-AUC": 0.359375
+  },
+  {
+    "Setup": "Local Hospital C Only (Isolated)",
+    "Privacy Level": "Isolated (Single Hospital Only)",
+    "Accuracy": 0.5625,
+    "Precision": 0.5555555555555556,
+    "Recall": 0.625,
+    "Specificity": 0.5,
+    "F1-Score": 0.5882352941176471,
+    "ROC-AUC": 0.625
+  }
+]

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Clinical Inference | Privacy-Preserving AMI Classification{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Cardiovascular Disease Clinical Inference</h2>
+        <p>Estimate the probability of an acute myocardial infarction (AMI) associated admission using vital sign observations processed through the exact standardized preprocessing and feature extraction pipeline.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="grid-2-col">
+        <!-- Input Form Section -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🩺</span>
+                <h3>Patient Physiological Inputs</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="prediction-form">
+                    <!-- Model Selector -->
+                    <div class="form-group">
+                        <label for="model_choice"><strong>Select Classification Model:</strong></label>
+                        <select name="model_choice" id="model_choice" class="form-control">
+                            {% for key, info in available_models.items() %}
+                            <option value="{{ key }}" {% if default_model == key %}selected{% endif %}>
+                                {{ info.name }} ({{ info.type }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">The Federated model was trained collaboratively across 3 hospital nodes without pooling patient data.</small>
+                    </div>
+
+                    <!-- Preset Quick Load Buttons -->
+                    <div class="preset-buttons">
+                        <span class="preset-label">Clinical Presets:</span>
+                        <button type="button" class="btn-sm btn-outline" onclick="loadPreset('ami')">High-Risk AMI Profile</button>
+                        <button type="button" class="btn-sm btn-outline" onclick="loadPreset('control')">Stable Control Profile</button>
+                        <button type="button" class="btn-sm btn-outline" onclick="loadPreset('borderline')">Hypotensive Profile</button>
+                    </div>
+
+                    <div class="vitals-input-grid mt-3">
+                        <div class="form-group">
+                            <label for="hr">Heart Rate (HR)</label>
+                            <div class="input-with-unit">
+                                <input type="number" step="0.1" name="hr" id="hr" class="form-control" value="88" required min="20" max="240">
+                                <span class="unit">bpm</span>
+                            </div>
+                            <small class="text-muted">Range: 20 &ndash; 240</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sbp">Systolic Blood Pressure (SBP)</label>
+                            <div class="input-with-unit">
+                                <input type="number" step="0.1" name="sbp" id="sbp" class="form-control" value="122" required min="30" max="260">
+                                <span class="unit">mmHg</span>
+                            </div>
+                            <small class="text-muted">Range: 30 &ndash; 260</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dbp">Diastolic Blood Pressure (DBP)</label>
+                            <div class="input-with-unit">
+                                <input type="number" step="0.1" name="dbp" id="dbp" class="form-control" value="76" required min="20" max="160">
+                                <span class="unit">mmHg</span>
+                            </div>
+                            <small class="text-muted">Range: 20 &ndash; 160</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spo2">Oxygen Saturation (SpO₂)</label>
+                            <div class="input-with-unit">
+                                <input type="number" step="0.1" name="spo2" id="spo2" class="form-control" value="97" required min="50" max="100">
+                                <span class="unit">%</span>
+                            </div>
+                            <small class="text-muted">Range: 50 &ndash; 100</small>
+                        </div>
+                    </div>
+
+                    <div class="divider"><span>OR</span></div>
+
+                    <!-- Batch / CSV Upload -->
+                    <div class="form-group">
+                        <label for="vitals_file"><strong>Upload Time-Series Vitals (CSV):</strong></label>
+                        <input type="file" name="vitals_file" id="vitals_file" class="form-control" accept=".csv">
+                        <small class="text-muted">Upload raw MIMIC-IV format chartevents CSV to evaluate multi-hour time-series with automatic trend extraction.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-4">Execute Model Inference &rarr;</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Output / Prediction Results Section -->
+        <div class="card result-card">
+            <div class="card-header">
+                <span class="card-icon">📈</span>
+                <h3>Inference Diagnostic Assessment</h3>
+            </div>
+            <div class="card-body">
+                {% if result %}
+                <div class="prediction-box {% if result.risk_level == 'High' %}risk-high{% else %}risk-low{% endif %}">
+                    <div class="risk-badge">{{ result.risk_level }} Risk</div>
+                    <div class="prediction-title">{{ result.prediction_label }}</div>
+                    <div class="model-meta">Evaluated using <strong>{{ result.model_used }}</strong> ({{ result.model_type }})</div>
+
+                    <!-- Probability Gauge -->
+                    <div class="gauge-container mt-4">
+                        <div class="gauge-labels">
+                            <span>Control / Negative</span>
+                            <span class="gauge-val"><strong>{{ (result.ami_probability * 100)|round(1) }}%</strong> AMI Probability</span>
+                            <span>AMI Positive</span>
+                        </div>
+                        <div class="gauge-bar">
+                            <div class="gauge-fill {% if result.risk_level == 'High' %}fill-high{% else %}fill-low{% endif %}" style="width: {{ (result.ami_probability * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="clinical-metrics mt-4">
+                        <div class="clinical-metric-item">
+                            <span class="cm-label">Shock Index (HR / SBP)</span>
+                            <span class="cm-val">{{ result.shock_index }}</span>
+                            <span class="cm-desc">{% if result.shock_index > 0.9 %}Elevated (> 0.9){% else %}Normal (&le; 0.9){% endif %}</span>
+                        </div>
+                        <div class="clinical-metric-item">
+                            <span class="cm-label">Pulse Pressure (SBP - DBP)</span>
+                            <span class="cm-val">{{ result.pulse_pressure }} mmHg</span>
+                            <span class="cm-desc">Target: 30 &ndash; 60 mmHg</span>
+                        </div>
+                    </div>
+
+                    <div class="input-summary-box mt-3">
+                        <strong>Input Evaluated:</strong> {{ result.input_summary }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h4>No Inference Executed Yet</h4>
+                    <p>Enter patient vital sign readings or choose a preset profile on the left, then click <strong>Execute Model Inference</strong> to compute the predictive score.</p>
+                </div>
+                {% endif %}
+
+                <div class="academic-note mt-4">
+                    <p><strong>Note on Methodology:</strong> The inference pipeline applies standard scaling ($\mu, \sigma$) computed strictly from the 24-hour training cohort, calculates linear slopes and physiological ratios, and feeds the resulting feature vector into the selected model architecture.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadPreset(type) {
+    if (type === 'ami') {
+        document.getElementById('hr').value = 112;
+        document.getElementById('sbp').value = 92;
+        document.getElementById('dbp').value = 60;
+        document.getElementById('spo2').value = 91;
+    } else if (type === 'control') {
+        document.getElementById('hr').value = 72;
+        document.getElementById('sbp').value = 124;
+        document.getElementById('dbp').value = 78;
+        document.getElementById('spo2').value = 99;
+    } else if (type === 'borderline') {
+        document.getElementById('hr').value = 96;
+        document.getElementById('sbp').value = 104;
+        document.getElementById('dbp').value = 68;
+        document.getElementById('spo2').value = 95;
+    }
+}
+</script>
+{% endblock %}

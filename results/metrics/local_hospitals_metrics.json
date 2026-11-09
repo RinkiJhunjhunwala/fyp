@@ -1,0 +1,153 @@
+[
+  {
+    "model_name": "Local Hospital A Only",
+    "accuracy": 0.625,
+    "precision": 0.6666666666666666,
+    "recall_sensitivity": 0.5,
+    "specificity": 0.75,
+    "f1_score": 0.5714285714285714,
+    "roc_auc": 0.578125,
+    "true_negatives": 6,
+    "false_positives": 2,
+    "false_negatives": 4,
+    "true_positives": 4,
+    "false_positive_rate": 0.25,
+    "false_negative_rate": 0.5,
+    "train_time_sec": 0.012942199944518507,
+    "inference_time_sec": 0.0004558999789878726,
+    "confusion_matrix": [
+      [
+        6,
+        2
+      ],
+      [
+        4,
+        4
+      ]
+    ],
+    "roc_curve_fpr": [
+      0.0,
+      0.0,
+      0.25,
+      0.25,
+      0.5,
+      0.5,
+      0.625,
+      0.625,
+      1.0,
+      1.0
+    ],
+    "roc_curve_tpr": [
+      0.0,
+      0.125,
+      0.125,
+      0.5,
+      0.5,
+      0.75,
+      0.75,
+      0.875,
+      0.875,
+      1.0
+    ]
+  },
+  {
+    "model_name": "Local Hospital B Only",
+    "accuracy": 0.3125,
+    "precision": 0.3333333333333333,
+    "recall_sensitivity": 0.375,
+    "specificity": 0.25,
+    "f1_score": 0.35294117647058826,
+    "roc_auc": 0.359375,
+    "true_negatives": 2,
+    "false_positives": 6,
+    "false_negatives": 5,
+    "true_positives": 3,
+    "false_positive_rate": 0.75,
+    "false_negative_rate": 0.625,
+    "train_time_sec": 0.011891499976627529,
+    "inference_time_sec": 0.0003971999976783991,
+    "confusion_matrix": [
+      [
+        2,
+        6
+      ],
+      [
+        5,
+        3
+      ]
+    ],
+    "roc_curve_fpr": [
+      0.0,
+      0.125,
+      0.125,
+      0.375,
+      0.375,
+      0.75,
+      0.75,
+      1.0,
+      1.0
+    ],
+    "roc_curve_tpr": [
+      0.0,
+      0.0,
+      0.125,
+      0.125,
+      0.375,
+      0.375,
+      0.75,
+      0.75,
+      1.0
+    ]
+  },
+  {
+    "model_name": "Local Hospital C Only",
+    "accuracy": 0.5625,
+    "precision": 0.5555555555555556,
+    "recall_sensitivity": 0.625,
+    "specificity": 0.5,
+    "f1_score": 0.5882352941176471,
+    "roc_auc": 0.625,
+    "true_negatives": 4,
+    "false_positives": 4,
+    "false_negatives": 3,
+    "true_positives": 5,
+    "false_positive_rate": 0.5,
+    "false_negative_rate": 0.375,
+    "train_time_sec": 0.009439799934625626,
+    "inference_time_sec": 0.0003841998986899853,
+    "confusion_matrix": [
+      [
+        4,
+        4
+      ],
+      [
+        3,
+        5
+      ]
+    ],
+    "roc_curve_fpr": [
+      0.0,
+      0.0,
+      0.125,
+      0.125,
+      0.375,
+      0.375,
+      0.5,
+      0.5,
+      1.0,
+      1.0
+    ],
+    "roc_curve_tpr": [
+      0.0,
+      0.125,
+      0.125,
+      0.375,
+      0.375,
+      0.625,
+      0.625,
+      0.875,
+      0.875,
+      1.0
+    ]
+  }
+]

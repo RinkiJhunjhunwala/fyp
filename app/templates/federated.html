@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Federated Network | Privacy-Preserving AMI Classification{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Federated Learning Network Architecture & Simulation</h2>
+        <p>Explore the decentralized topology of the 3 simulated hospital nodes, communication round orchestration, parameter aggregation via Federated Averaging (FedAvg), and empirical convergence curves.</p>
+    </div>
+
+    <!-- Interactive Architecture Diagram -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <span class="card-icon">🌐</span>
+            <h3>Decentralized Hospital Topology & Parameter Exchange</h3>
+        </div>
+        <div class="card-body">
+            <div class="fl-network-container">
+                <!-- Central Server -->
+                <div class="fl-server-node">
+                    <div class="node-icon">🖥️</div>
+                    <div class="node-title">Central Coordinator Server</div>
+                    <div class="node-badge">FedAvg Aggregator</div>
+                    <p class="node-desc">Orchestrates rounds, averages model weights, evaluates global test performance.</p>
+                </div>
+
+                <!-- Downlink/Uplink Transmission Arrows -->
+                <div class="fl-transmission-flow">
+                    <div class="flow-item">
+                        <span class="flow-arrow">&darr;</span>
+                        <span class="flow-text">Broadcast Global Parameters $(W_t, b_t)$</span>
+                    </div>
+                    <div class="flow-item">
+                        <span class="flow-arrow">&uarr;</span>
+                        <span class="flow-text">Transmit Local Weight Updates $(\Delta W_k, n_k)$ &mdash; <em>Zero Raw Data</em></span>
+                    </div>
+                </div>
+
+                <!-- Three Hospital Client Nodes -->
+                <div class="fl-clients-grid">
+                    <div class="client-card">
+                        <div class="client-badge">Client 1</div>
+                        <h4>Hospital A</h4>
+                        <div class="client-sub">Urban Medical Center</div>
+                        <div class="client-stats">
+                            <div><strong>Cohort:</strong> 22 patients</div>
+                            <div><strong>Distribution:</strong> 11 AMI / 11 Control</div>
+                            <div><strong>Local Training:</strong> 5 epochs / round</div>
+                        </div>
+                        <div class="client-status active">Connected &bull; Local SGD</div>
+                    </div>
+
+                    <div class="client-card">
+                        <div class="client-badge">Client 2</div>
+                        <h4>Hospital B</h4>
+                        <div class="client-sub">University Hospital</div>
+                        <div class="client-stats">
+                            <div><strong>Cohort:</strong> 22 patients</div>
+                            <div><strong>Distribution:</strong> 11 AMI / 11 Control</div>
+                            <div><strong>Local Training:</strong> 5 epochs / round</div>
+                        </div>
+                        <div class="client-status active">Connected &bull; Local SGD</div>
+                    </div>
+
+                    <div class="client-card">
+                        <div class="client-badge">Client 3</div>
+                        <h4>Hospital C</h4>
+                        <div class="client-sub">Regional Health Center</div>
+                        <div class="client-stats">
+                            <div><strong>Cohort:</strong> 20 patients</div>
+                            <div><strong>Distribution:</strong> 10 AMI / 10 Control</div>
+                            <div><strong>Local Training:</strong> 5 epochs / round</div>
+                        </div>
+                        <div class="client-status active">Connected &bull; Local SGD</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout success mt-4">
+                <strong>Mathematical Aggregation Procedure:</strong> At round $t$, the central server performs Federated Averaging (FedAvg):
+                $$W_{t+1} = \sum_{k=1}^K \frac{n_k}{N} W_k^{(t)}, \quad b_{t+1} = \sum_{k=1}^K \frac{n_k}{N} b_k^{(t)}$$
+                where $n_k$ is the number of local training patients at hospital $k$, and $N = \sum_{k=1}^K n_k$ is the total decentralized training cohort size.
+            </div>
+        </div>
+    </div>
+
+    <!-- Convergence Figures -->
+    <div class="grid-2-col mb-4">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">📉</span>
+                <h3>Global Convergence Across Rounds</h3>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='figures/federated_learning_rounds.png') }}" alt="Convergence Across Rounds" class="img-responsive">
+                <p class="figure-caption mt-2">Test accuracy increases from 43.75% to 68.75% while Binary Cross-Entropy test loss drops monotonically from 0.70 to 0.63.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🔄</span>
+                <h3>IID vs Non-IID Distribution Comparison</h3>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='figures/federated_iid_vs_non_iid.png') }}" alt="IID vs Non-IID Comparison" class="img-responsive">
+                <p class="figure-caption mt-2">Evaluation of FedAvg under controlled clinical prevalence skew (Specialty Cardiac: 76% AMI vs Community: 23% AMI vs Clinic: 52% AMI).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Communication Rounds History Table -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <span class="card-icon">📋</span>
+            <h3>Communication Rounds Log (IID Experiment)</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Global Test Accuracy</th>
+                            <th>Global Test Loss</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Round Time (s)</th>
+                            <th>Comm. Overhead (Bytes)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in iid_rounds %}
+                        <tr class="{% if loop.last %}highlight-row{% endif %}">
+                            <td><strong>Round {{ r['round'] }}</strong></td>
+                            <td>{{ (r['test_accuracy']|float * 100)|round(2) }}%</td>
+                            <td>{{ r['test_loss']|round(4) }}</td>
+                            <td>{{ (r['precision']|float * 100)|round(2) }}%</td>
+                            <td>{{ (r['recall']|float * 100)|round(2) }}%</td>
+                            <td>{{ r['f1_score']|round(4) }}</td>
+                            <td>{{ r['round_time_sec']|round(3) }}s</td>
+                            <td>{{ r['comm_overhead_bytes'] }} B</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
