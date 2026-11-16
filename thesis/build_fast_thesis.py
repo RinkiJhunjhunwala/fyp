@@ -243,7 +243,7 @@ preamble = r"""\documentclass[12pt,a4paper,oneside]{report}
     \centering
     \vspace*{0.5cm}
     
-    {\Huge \textbf{PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}}
+    {\Huge\bfseries PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
     
     \vspace{2.2cm}
     
@@ -276,7 +276,7 @@ preamble = r"""\documentclass[12pt,a4paper,oneside]{report}
 \begin{center}
     \vspace*{0.5cm}
     
-    {\Huge \textbf{PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}}
+    {\Huge\bfseries PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
     
     \vspace{1.5cm}
     
