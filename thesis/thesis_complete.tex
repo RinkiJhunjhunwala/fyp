@@ -21,6 +21,13 @@
 % 1.5 line spacing as per NIT Agartala thesis guidelines
 \onehalfspacing
 
+% Typographical tolerances to eliminate overfull/underfull hbox warnings
+\emergencystretch 3em
+\hfuzz 3pt
+\vfuzz 3pt
+\hbadness 10000
+
+
 % Paragraph formatting
 \setlength{\parindent}{0.4in}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
@@ -502,7 +509,7 @@ To systematically contextualize the contributions of this thesis within the broa
 \caption{Analytical Comparison of Major Clinical Risk Assessment and Federated Learning Studies}
 \label{tab:literature_comparison}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}llllllp{4.5cm}@{}}
+\begin{tabular}{@{}llllll>{\raggedright\arraybackslash}p{4.5cm}@{}}
 \toprule
 \textbf{Study / Work} & \textbf{Clinical Modality} & \textbf{Learning Paradigm} & \textbf{Dataset / Cohort} & \textbf{Primary Algorithm} & \textbf{Key Results} & \textbf{Identified Limitations} \\ \midrule
 Antman et al. (2000) \citep{antman2000timi} & Tabular Clinical Features & Rule-Based Scoring & Clinical Trial (TIMI-11B) & Logistic Point Score & C-Statistic $\approx 0.65$--$0.74$ & Static; requires subjective clinician inputs; ignores vital trends. \\ \addlinespace
@@ -684,8 +691,8 @@ A formal binary classification target, denoted $y_i \in \{0, 1\}$, was assigned 
 \begin{equation}
 y_i = 
 \begin{cases} 
-1, & \text{if an AMI diagnosis code (ICD-9: 410, ICD-10: I21, I22) was recorded,} \\
-0, & \text{if no AMI diagnosis code was recorded and patient is cross-encounter negative.}
+1, & \text{if AMI code (ICD-9: 410, ICD-10: I21--I22) was recorded,} \\
+0, & \text{if no AMI diagnosis code was recorded for patient.}
 \end{cases}
 \end{equation}
 

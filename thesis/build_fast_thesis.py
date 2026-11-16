@@ -154,6 +154,13 @@ preamble = r"""\documentclass[12pt,a4paper,oneside]{report}
 % 1.5 line spacing as per NIT Agartala thesis guidelines
 \onehalfspacing
 
+% Typographical tolerances to eliminate overfull/underfull hbox warnings
+\emergencystretch 3em
+\hfuzz 3pt
+\vfuzz 3pt
+\hbadness 10000
+
+
 % Paragraph formatting
 \setlength{\parindent}{0.4in}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
