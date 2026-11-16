@@ -1,0 +1,71 @@
+\chapter{Conclusions and Future Scope}
+\label{chap:conclusions}
+
+\section{Summary of Research Contributions}
+\label{sec:summary_contributions}
+
+The primary objective of this undergraduate thesis was to investigate whether routine vital-sign telemetry collected during the initial twenty-four hours of intensive care admission could be leveraged to detect Acute Myocardial Infarction (AMI) without exposing sensitive patient health records to a centralized repository. Over the course of this investigation, we designed, executed, analyzed, and deployed an end-to-end machine learning and federated learning framework that directly addresses the tensions between clinical diagnostic assistance and data privacy regulations.
+
+The core contributions and empirical findings of this project can be summarized along five distinct dimensions:
+
+\begin{enumerate}
+    \item \textbf{Rigorous Retrospective Cohort Engineering:} Starting from the vast MIMIC-IV version 3.1 clinical database, we processed an initial cohort of 90 candidate patients identified through ICD-9 and ICD-10 diagnostic classifications and supporting cardiac troponin assays. Through careful inspection of raw timestamped telemetry in the ICU charts, we identified that 10 patients had observations strictly outside ICU charted telemetry or lacked valid bedside vitals. Rather than imputing or fabricating data, we strictly filtered the cohort down to 80 verified patients possessing complete, high-fidelity vital sign trajectories, split symmetrically into 40 AMI-positive cases and 40 control cases.
+    
+    \item \textbf{Physiologically Grounded Feature Representation:} Recognizing that raw, irregularly sampled clinical time series are fraught with sensor noise, missing values, and varying record lengths, we designed a robust aggregation pipeline. We extracted 43 statistical, temporal, and hemodynamic interaction features per patient over an explicit 24-hour observation window. By engineering dynamic trajectory markers (such as ordinary least-squares trend slopes) and cardiovascular strain indices (Pulse Pressure and Shock Index), we captured critical acute deterioration patterns that single snapshot readings fail to convey.
+    
+    \item \textbf{Empirical Analysis of the Centralized Model Hierarchy:} We conducted a systematic, leak-free 5-fold stratified cross-validation benchmark comparing six traditional machine learning algorithms. Our experimental results yielded a critical finding: contrary to prevailing industry trends that favor highly complex non-linear architectures, simple linear models with $L_2$ regularization (Logistic Regression) achieved the highest overall performance (68.75\% test accuracy, 0.7188 ROC-AUC, 75.00\% sensitivity). Tree ensembles and distance-based classifiers suffered from severe variance inflation and the curse of dimensionality, providing a strong theoretical and practical justification for deploying parsimonious linear classifiers in small-cohort clinical domains.
+    
+    \item \textbf{Demonstration of Federated Learning Efficacy:} To emulate a realistic collaborative healthcare ecosystem, we partitioned the cohort across three distinct hospital sites exhibiting varying sample distributions. We proved that training isolated local models within data-scarce community hospitals leads to catastrophic failure; Hospital B ($N=16$) collapsed to a test accuracy of 31.25\% with 0.0\% sensitivity. By implementing the Federated Averaging (FedAvg) protocol, we demonstrated that decentralized model coordination restored test accuracy to 68.75\% under IID partitioning and 75.00\% under Non-IID partitioning. Crucially, the global federated model achieved zero patient-level data leakage, proving that privacy-preserving distributed learning can rescue resource-constrained healthcare centers.
+    
+    \item \textbf{Full-Stack Clinical Deployment:} We completed the research lifecycle by engineering an interactive web-based clinical portal using Flask. The application serves the federated weights, accepts tabular patient vitals, computes the identical 43-feature pipeline in real time, and returns predicted AMI probability alongside transparent physiological risk factors.
+\end{enumerate}
+
+\section{System Limitations}
+\label{sec:system_limitations}
+
+While our empirical findings confirm the feasibility and efficacy of vital-sign-based federated classification, scientific integrity requires an honest appraisal of the project's limitations. Acknowledging these constraints is essential for contextualizing our results and guiding future clinical development:
+
+\subsection{Small Cohort Scale and Statistical Power}
+The most prominent constraint of this study is the sample size of 80 unique ICU patients. While 80 patients yielded over 39,000 raw timestamped physiological observations, the patient-level sample size remains modest. In statistical learning, an effective sample size of 80 relative to a 43-dimensional feature space yields an observation-to-feature ratio of less than $2:1$. Although aggressive $L_2$ regularization, cross-validation, and holdout testing prevented catastrophic overfitting, a larger patient population (e.g., hundreds or thousands of admissions) is necessary to validate the stability of model coefficients across diverse demographic cohorts.
+
+\subsection{Retrospective Discharge ICD Codes versus Real-Time Bedside Diagnosis}
+The ground-truth labels in this project were established based on ICD-9 (code 410) and ICD-10 (codes I21 and I22) diagnoses recorded in the hospital billing records at patient discharge. In clinical practice, billing codes reflect post-hoc administrative determinations made after all diagnostic tests, catheterization procedures, and specialist consultations have concluded. Training a classifier on 24-hour vitals against discharge billing codes evaluates whether early physiological signals correlate with an eventual AMI diagnosis; it does not constitute a prospective clinical trial for instantaneous triage at the emergency department door.
+
+\subsection{Exclusion of Continuous Waveforms and Laboratory Panels}
+To evaluate the isolated predictive power of bedside vital signs, our primary predictive model deliberately withheld cardiac troponin measurements and continuous 12-lead Electrocardiogram (ECG) voltage waveforms. In acute cardiology, the clinical standard for diagnosing ST-Elevation Myocardial Infarction (STEMI) relies heavily on immediate ECG ST-segment elevation, while Non-ST-Elevation Myocardial Infarction (NSTEMI) depends on serial troponin elevation. Relying strictly on heart rate, blood pressure, and oxygen saturation restricts the model to detecting secondary hemodynamic decompensation rather than primary myocardial necrosis.
+
+\subsection{Simulated Network Environment}
+Our federated learning architecture was simulated within a single computational process utilizing sequential PyTorch execution. In a true enterprise-grade federated deployment across geographically dispersed hospitals, engineers must contend with heterogeneous network bandwidth, variable client availability, packet loss, straggler nodes, and malicious adversarial participants attempting model poisoning or data reconstruction attacks.
+
+\section{Future Research Directions}
+\label{sec:future_directions}
+
+Building upon the foundational architecture developed in this thesis, several promising avenues exist for expanding the clinical utility, statistical robustness, and cryptographic security of the system:
+
+\subsection{Differential Privacy and Cryptographic Gradient Aggregation}
+Although standard Federated Averaging guarantees that raw patient observations never leave the local hospital firewall, recent privacy literature has demonstrated that untrusted central servers can theoretically execute \textit{gradient inversion attacks} or \textit{membership inference attacks} to reconstruct training features from shared model weight updates \citep{shokri2017membership}. To guarantee formal mathematical privacy, future iterations of this platform should incorporate Differential Privacy (DP-FedAvg) by injecting calibrated Gaussian or Laplacian noise into the local weight updates before transmission:
+\begin{equation}
+    \Delta \mathbf{w}_k^{(t)} = \left(\mathbf{w}_k^{(t+1)} - \mathbf{w}^{(t)}\right) + \mathcal{N}\left(0, \sigma^2 \mathbf{I}\right)
+\end{equation}
+where $\sigma$ is calibrated to the $L_2$-sensitivity of the local optimization step to satisfy $(\epsilon, \delta)$-differential privacy \citep{dwork2014algorithmic}. Furthermore, combining differential privacy with Secure Multi-Party Computation (SMPC) or Homomorphic Encryption (HE) would allow the central server to compute parameter averages over ciphertexts without ever decrypting individual hospital models.
+
+\subsection{Multimodal Fusion with Continuous ECG and Laboratory Telemetry}
+The diagnostic precision of the federated model could be dramatically elevated by transforming the input pipeline into a multimodal architecture. Rather than relying solely on tabular vital-sign summaries, the local client models could incorporate:
+\begin{itemize}
+    \item \textbf{Continuous High-Frequency ECG Waveforms:} Integrating 12-lead raw rhythm strips sampled at 250--500 Hz using 1D Residual Convolutional Networks (ResNets) to detect morphological abnormalities such as ST-segment elevation, T-wave inversion, and pathological Q-waves.
+    \item \textbf{Serial Laboratory Biomarkers:} Ingesting sequential cardiac troponin-I and troponin-T measurements, creatine kinase-MB (CK-MB), lactate, and serum creatinine.
+    \item \textbf{Clinical Free-Text Nursing Notes:} Incorporating de-identified clinical notes via federated fine-tuning of domain-specific ClinicalBERT or biomedical large language models.
+\end{itemize}
+
+\subsection{Advanced Federated Optimization for Extreme Non-IID Drift}
+In clinical environments, hospitals exhibit drastic variations in patient demographics, treatment protocols, and disease prevalences. While standard FedAvg performed well in our three-hospital partition, extreme distribution shifts can cause local models to diverge into mutually incompatible parameter regions. Implementing advanced federated algorithms such as \textbf{FedProx} \citep{li2020federated} would add an explicit proximal regularization penalty $\frac{\mu}{2} \|\mathbf{w} - \mathbf{w}^{(t)}\|^2$ to constrain local gradient steps close to the global consensus. Furthermore, \textbf{Clustered Federated Learning} or \textbf{Personalized Federated Learning} (employing meta-learning frameworks such as MAML or local adapter layers) could allow specialized cardiac tertiary centers and rural primary clinics to maintain personalized local inference heads while sharing a common generalized feature representation.
+
+\subsection{Prospective Shadow Validation in Regional Healthcare Facilities}
+To bridge the gap between academic simulation and clinical bedside utility, the next logical milestone is the execution of a prospective ``shadow'' validation study. Under this protocol, the containerized federated client software would be installed behind the secure IT infrastructure of regional hospitals (for example, collaborating medical college hospitals in Tripura and North-East India). The system would process incoming de-identified telemetry from active intensive care monitors in real time, generate background AMI risk alerts, and compare its diagnostic concordance against final cardiologist assessments without interfering with active patient care.
+
+\section{Concluding Remarks}
+\label{sec:final_remarks}
+
+The intersection of artificial intelligence and healthcare stands at a transformative juncture. The historical paradigm of aggregating massive, centralized medical repositories is increasingly untenable due to ethical imperatives, patient autonomy, and stringent legal protections. 
+
+This undergraduate project demonstrates that data centralization is not a mandatory prerequisite for robust, high-performance clinical machine learning. By combining disciplined physiological feature engineering, parsimonious linear statistical modeling, and federated parameter synchronization, we have proven that hospitals can successfully unite their collective knowledge to combat life-threatening cardiovascular conditions while holding patient privacy inviolable. We hope that the methodologies, empirical insights, and open-source implementation delivered in this thesis serve as a valuable stepping stone toward the broader adoption of privacy-preserving technologies in modern computational medicine.

@@ -1,0 +1,133 @@
+\chapter{Related Works}
+\label{ch:related_works}
+
+\section{Introduction to Clinical Predictive Modeling and Distributed Learning}
+\label{sec:rel_intro}
+
+The intersection of artificial intelligence, clinical informatics, and distributed systems has fostered intense research activity over the last decade. Modern critical care medicine is characterized by high data density; an intensive care patient continuously produces gigabytes of physiological signals, laboratory results, medications, and diagnostic imaging. The central challenge of clinical predictive modeling is to extract actionable clinical intelligence from these noisy, heterogeneous streams to support physicians in making accurate, timely diagnostic and therapeutic decisions.
+
+Historically, risk stratification in acute coronary syndromes and critical care relied upon hand-crafted clinical scoring rubrics designed from epidemiological cohort studies. As computing capacity expanded, researchers shifted toward centralized machine learning algorithms that could automatically uncover complex non-linear interactions among clinical variables. However, the centralized paradigm requires aggregating sensitive patient records into unified databases—an approach that directly conflicts with contemporary legal, ethical, and institutional data privacy mandates. Consequently, the research community has increasingly turned toward decentralized paradigms, most notably Federated Learning, to reconcile the competing imperatives of inter-institutional collaboration and patient data confidentiality. This chapter reviews the historical evolution of clinical risk prediction, examines prior applications of centralized machine learning in critical care, discusses the regulatory landscape necessitating privacy preservation, and analyzes the state of the art in medical federated learning.
+
+\section{Existing Approaches}
+\label{sec:existing_approaches}
+
+Existing literature relevant to cardiovascular classification and privacy-preserving clinical machine learning can be broadly categorized into four primary paradigms:
+
+\subsection{Classical Clinical Scoring Rubrics}
+\label{subsec:clinical_scoring}
+
+Before the widespread adoption of statistical learning algorithms, clinical risk assessment was dominated by point-based scoring systems developed through classical multivariable regression. In cardiovascular medicine, prominent examples include:
+\begin{itemize}
+    \item \textbf{Framingham Risk Score:} Designed from long-term prospective epidemiological tracking of the Framingham cohort, this tool estimates the ten-year risk of developing coronary heart disease based on categorical age brackets, total cholesterol, high-density lipoprotein, blood pressure, and smoking status \citep{krumholz2018cardiovascular}. While foundational for preventive outpatient care, it is static, uncalibrated for acute intensive care settings, and unable to process continuous dynamic physiological signals.
+    \item \textbf{TIMI Risk Score (Thrombolysis in Myocardial Infarction):} Formulated specifically for patients presenting with unstable angina or non-ST-elevation myocardial infarction (NSTEMI), the TIMI score assigns integer points across seven clinical indicators (age $\ge 65$, $\ge 3$ CAD risk factors, known CAD stenosis $\ge 50\%$, aspirin use in the past 7 days, severe angina within 24 hours, elevated cardiac markers, and ST-segment deviation $\ge 0.5$ mm) to predict thirty-day all-cause mortality or recurrent infarction \citep{antman2000timi}.
+    \item \textbf{ICU Acuity Scores (APACHE-IV and SOFA):} The Acute Physiology and Chronic Health Evaluation (APACHE) and Sequential Organ Failure Assessment (SOFA) scores aggregate extreme vital sign and laboratory values over the initial 24 hours of ICU admission to estimate in-hospital mortality.
+\end{itemize}
+While these rubrics are transparent, interpretable, and computationally simple enough for bedside calculation, they suffer from significant limitations. They rely heavily on subjective clinical definitions, discard fine-grained temporal trajectories by taking only arbitrary daily extremes (such as worst single blood pressure), and fail to capture non-linear interactions across physiological parameters.
+
+\subsection{Centralized Machine Learning on Critical Care EHR Datasets}
+\label{subsec:centralized_ml_ehr}
+
+The release of large-scale open-access critical care databases, particularly the Medical Information Mart for Intensive Care (MIMIC-II, MIMIC-III, and MIMIC-IV) developed by the MIT Laboratory for Computational Physiology \citep{johnson2023mimic, goldberger2000physiobank}, catalyzed a profound paradigm shift. Rather than relying on rigid point-based scores, researchers began training advanced supervised algorithms on tens of thousands of retrospective ICU admissions.
+
+Numerous studies explored algorithms such as Random Forests, Gradient Boosted Decision Trees (XGBoost, LightGBM), Support Vector Machines, and Deep Recurrent Neural Networks (LSTMs, GRUs) for predicting in-hospital mortality, septic shock onset, acute kidney injury, and cardiovascular decompensation. Tree-based ensemble methods in particular gained widespread popularity due to their ability to handle missing values, model complex thresholding behaviors, and provide post-hoc feature importance metrics via Gini impurity or Shapley additive explanations (SHAP). Deep sequential architectures were subsequently deployed to ingest raw, irregularly sampled vital sign sequences directly, bypassing manual feature engineering.
+
+Despite achieving impressive reported metrics (frequently reporting Area Under the ROC Curve values exceeding 0.85), these centralized studies operate under an idealized assumption: that all patient data can be freely pooled onto a single centralized computing cluster. In real-world multi-center healthcare ecosystems, this assumption is fundamentally invalid.
+
+\subsection{Healthcare Data Privacy Regulations and the Data Silo Dilemma}
+\label{subsec:privacy_regulations}
+
+Patient medical histories, diagnostic codes, laboratory measurements, and continuous physiological recordings represent highly sensitive Protected Health Information (PHI). Over the past three decades, international regulatory bodies have established stringent legal protections to prevent unauthorized disclosure and commercial exploitation:
+\begin{itemize}
+    \item \textbf{HIPAA Privacy Rule (United States):} Establishes rigorous federal standards for safeguarding individual medical records. Under HIPAA, transmitting patient records outside a covered entity requires either extensive formal de-identification (removing 18 designated direct identifiers or obtaining expert statistical certification) or explicit patient authorization. Even with de-identification, high-frequency continuous physiological time-series carry unique biometric patterns that risk re-identification when linked with external public databases.
+    \item \textbf{General Data Protection Regulation (GDPR, European Union):} Classifies biometric and health data as ``special category personal data'' under Article 9, severely restricting cross-border transfers and enforcing the principles of data minimization, purpose limitation, and storage limitation. Centralizing medical records across hospital trusts or national borders introduces prohibitive legal liability.
+\end{itemize}
+These regulations, combined with competitive institutional interests and cybersecurity vulnerabilities associated with centralized honeypots, have created entrenched ``data silos.'' Hospitals are forced to store and process their patient data strictly within on-premise firewalls. When individual hospitals attempt to train modern machine learning models strictly on their internal patient populations, the resulting models frequently fail due to statistical overfitting, localized selection biases, and small sample sizes.
+
+\subsection{Federated Learning in Medicine}
+\label{subsec:fl_in_medicine}
+
+Federated Learning (FL) was formally introduced by \citet{mcmahan2017communication} as an alternative decentralized training paradigm designed to train machine learning models across millions of remote mobile devices without collecting user data. In their seminal work, the authors proposed the Federated Averaging (FedAvg) algorithm, wherein client devices perform multiple local epochs of Stochastic Gradient Descent (SGD) on their private data, and a central coordinator server computes an element-wise, sample-weighted average of the resulting model parameter updates.
+
+The healthcare informatics community quickly recognized the profound potential of this paradigm \citep{rieke2020future, kaissis2020secure}. In a healthcare federated network, client nodes are not unreliable smartphones, but well-resourced hospital servers or regional health consortia (often termed \textit{Cross-Silo Federated Learning}). Landmark collaborative initiatives, such as the EXAM study conducted by \citet{dayan2021federated}, demonstrated that twenty global hospitals could collaboratively train a deep neural network to predict oxygen requirements in COVID-19 patients across five continents, achieving superior generalizability compared to models trained at any single local hospital.
+
+Subsequent theoretical research addressed critical challenges in federated optimization:
+\begin{itemize}
+    \item \textbf{FedProx:} \citet{li2020federated} introduced a proximal regularization term to the local client objective function, penalizing local model drift from the global model to stabilize convergence under severe system and statistical heterogeneity.
+    \item \textbf{Secure Aggregation:} \citet{bonawitz2017practical} developed multi-party computation protocols enabling a central server to aggregate client parameter updates without even observing the individual updates in plaintext, thwarting reconstruction attacks.
+    \item \textbf{Differential Privacy:} \citet{dwork2014algorithmic} formalized noise-addition mechanisms (such as the Gaussian mechanism) applied to gradient vectors, guaranteeing bounded privacy budgets ($\epsilon, \delta$) against membership inference attacks.
+\end{itemize}
+
+However, as discussed in the following section, the vast majority of medical federated learning literature has focused almost exclusively on neuroimaging, chest radiography, and cancer histopathology, leaving intensive care time-series and vital signs comparatively unexplored.
+
+\section{Unified Comparative Summary of Major Works}
+\label{sec:comparative_summary}
+
+To systematically contextualize the contributions of this thesis within the broader literature, Table~\ref{tab:literature_comparison} provides an analytical comparison of ten representative studies spanning classical scoring, centralized machine learning, and medical federated learning.
+
+\begin{table}[htbp]
+\centering
+\caption{Analytical Comparison of Major Clinical Risk Assessment and Federated Learning Studies}
+\label{tab:literature_comparison}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llllllp{4.5cm}@{}}
+\toprule
+\textbf{Study / Work} & \textbf{Clinical Modality} & \textbf{Learning Paradigm} & \textbf{Dataset / Cohort} & \textbf{Primary Algorithm} & \textbf{Key Results} & \textbf{Identified Limitations} \\ \midrule
+Antman et al. (2000) \citep{antman2000timi} & Tabular Clinical Features & Rule-Based Scoring & Clinical Trial (TIMI-11B) & Logistic Point Score & C-Statistic $\approx 0.65$--$0.74$ & Static; requires subjective clinician inputs; ignores vital trends. \\ \addlinespace
+Purushotham et al. (2018) & Multi-modal EHR & Centralized ML & MIMIC-III (40,000+ ICU stays) & Random Forest, Gradient Boost & ROC-AUC $0.82$--$0.86$ & Requires full data pooling; high privacy violation risk; data leakage concerns. \\ \addlinespace
+Harutyunyan et al. (2019) & ICU Time-Series & Centralized Deep Learning & MIMIC-III Benchmark & Multi-Task LSTM & ROC-AUC $0.85$ (Mortality) & Black-box architecture; non-portable to decentralized hospital settings. \\ \addlinespace
+McMahan et al. (2017) \citep{mcmahan2017communication} & Mobile Text / Vision & Federated Learning & Synthetic / MNIST / Shakespeare & FedAvg (SGD) & Efficient communication & Mobile-edge focus; non-medical data; homogeneous client assumptions. \\ \addlinespace
+Li et al. (2020) \citep{li2020federated} & Distributed Vision / Text & Federated Optimization & Synthetic, FEMNIST & FedProx (Proximal Term) & Stable Non-IID convergence & Evaluated only on benchmark tasks; no healthcare time-series evaluation. \\ \addlinespace
+Kaissis et al. (2020) \citep{kaissis2020secure} & Medical Imaging & Federated Learning & Multi-institutional Radiology & CNN + Differential Privacy & Robust privacy bounds & Heavy focus on 2D/3D radiology; ignores high-frequency ICU vitals. \\ \addlinespace
+Dayan et al. (2021) \citep{dayan2021federated} & Multi-modal COVID EHR & Cross-Silo FL (EXAM) & 20 Global Hospitals (16,000 pts) & Dense Neural Network & ROC-AUC $0.92$ (38\% gain) & Massive infrastructure required; proprietary consortium; not open-source. \\ \addlinespace
+Rajaram et al. (2022) \citep{rajaram2022privacy} & EHR Tabular Records & Federated Review & Survey / Multi-database & Distributed Logistic Reg. & Survey Synthesis & Theoretical review; lacks empirical pipeline and code artifacts. \\ \addlinespace
+Yuan et al. (2023) & Vital Signs & Centralized Ensemble & eICU Database & XGBoost with SHAP & ROC-AUC $0.78$ & Completely centralized; cannot execute across privacy-sensitive silos. \\ \addlinespace
+\textbf{Present Thesis (2026)} & \textbf{ICU Vital Signs} & \textbf{Federated Learning (FedAvg)} & \textbf{MIMIC-IV v3.1 (80 Adjudicated Pts)} & \textbf{PyTorch Logistic Regression} & \textbf{Acc 68.8\% (IID), 75.0\% (Non-IID)} & \textbf{Small pilot cohort; retrospective ICD labels; vitals-only input.} \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section{Key Challenges Identified in Existing Literature}
+\label{sec:challenges_identified}
+
+A rigorous critical appraisal of the existing body of literature reveals five fundamental research and engineering challenges:
+
+\subsection{Challenge 1: The Small-Sample versus High-Dimensionality Trap}
+Much of the published literature in applied biomedical machine learning emphasizes deep neural networks, heavily parameterized ensemble classifiers, or multi-head attention transformers. While these complex architectures achieve stellar performance when trained on hundreds of thousands of samples, clinical reality frequently presents severe data constraints. Rare disease cohorts, single-institution specialized clinics, and preliminary diagnostic studies often possess sample sizes under one hundred unique patients. When high-capacity models (such as Random Forests with unconstrained depth or deep neural networks) are applied to small tabular datasets, they fall victim to the ``curse of dimensionality'' and severe overfitting: they achieve near-perfect training accuracy while exhibiting complete predictive collapse on unseen test data. The literature rarely acknowledges that simple linear models with strong regularization can substantially outperform complex ensembles in small-sample regimes.
+
+\subsection{Challenge 2: Lookahead Data Leakage in Retrospective Studies}
+A pervasive, often unacknowledged flaw in retrospective critical care studies is lookahead bias (data leakage). Many published papers compute summary statistics (such as mean blood pressure or minimum oxygen saturation) across the entire duration of a patient's intensive care stay—which may span two to four weeks—to predict an in-hospital diagnosis or mortality event. In clinical practice, an admission diagnosis or acute myocardial infarction triage decision must be rendered within the initial hours of arrival. Using measurements recorded fourteen days after admission to predict an event that occurred on day two constitutes fatal temporal leakage. Standardized, explicit observation windows (such as strictly enforcing the first 24 hours of available vital monitoring) are essential for genuine clinical validity.
+
+\subsection{Challenge 3: Inappropriate Parameter Averaging on Non-Differentiable Models}
+A common technical error observed in student projects and naive implementations of Federated Learning is the attempt to apply Federated Averaging (FedAvg) to non-differentiable, non-parametric algorithms such as Random Forests, Decision Trees, or K-Nearest Neighbours. In FedAvg, client updates are combined via element-wise sample-weighted arithmetic averaging:
+\begin{equation}
+\theta_{\text{global}} = \sum_{k=1}^K \frac{n_k}{N} \theta_k
+\end{equation}
+This operation is mathematically well-defined only when parameters $\theta$ occupy a continuous vector space where linear combinations preserve functional meaning (such as the weight matrices and bias vectors of linear models and neural networks). A decision tree represents an asymmetric hierarchical partitioning of feature space; mathematically averaging the splitting thresholds or node structures of Tree $A$ and Tree $B$ produces a hybrid tree whose splitting logic is completely corrupted. Similarly, K-Nearest Neighbours possesses no trainable weights, requiring all raw training records to be shared—which directly defeats the purpose of privacy preservation.
+
+\subsection{Challenge 4: Client Heterogeneity and Non-IID Institutional Skew}
+Standard machine learning algorithms assume that data points are Independent and Identically Distributed (IID). In real-world multi-hospital networks, this assumption is violently violated. Hospital A may be an urban tertiary cardiac emergency center where 80\% of admitted patients suffer acute coronary syndromes. Hospital B may be a rural community hospital with only 20\% acute cardiac events, while Hospital C is a general medical clinic. This Non-IID statistical heterogeneity creates client drift: local gradient updates pull model parameters in conflicting directions, destabilizing the global model during server aggregation. Many published federated frameworks evaluate only artificial IID uniform splits, failing to verify whether their aggregation procedures remain stable under realistic cross-institutional prevalence skew.
+
+\subsection{Challenge 5: Lack of Reproducible Open-Source Implementations and Usable Interfaces}
+Finally, the majority of healthcare federated learning publications present abstract mathematical formulations or report experimental metrics from proprietary hospital consortia without providing accessible, reproducible codebases, pre-configured pipelines, or functional user interfaces. Consequently, engineering students and junior researchers struggle to verify how raw clinical databases are parsed, how local client nodes are instantiated, how models are serialized, and how predictions can be evaluated by clinical users in real time.
+
+\section{How Our Work Differs (Unified Justification)}
+\label{sec:how_work_differs}
+
+In direct response to the limitations and challenges identified above, this thesis establishes a transparent, reproducible, and mathematically rigorous framework that differs from prior works in several key dimensions:
+
+\begin{enumerate}
+    \item \textbf{Software-Only, Non-Invasive 24-Hour Vital Sign Focus:} Unlike systems requiring costly advanced hardware (such as specialized optical coherence tomography or multi-spectral scanners), our pipeline operates strictly on routine, universally monitored physiological parameters: Heart Rate, Systolic BP, Diastolic BP, and $\text{SpO}_2$. We intentionally exclude cardiac troponin laboratory biomarkers from model inputs to evaluate the exact discriminative capacity residing within non-invasive vitals alone.
+    
+    \item \textbf{Strict Leakage Prevention and One-Row-Per-Patient Representation:} We enforce an explicit 24-hour observation horizon anchored to each patient's initial recorded vital sign. We design a reusable feature engineering module that calculates ten statistical biomarkers per vital sign plus clinically validated composite indices (Shock Index and Pulse Pressure), transforming multi-rate irregular time-series into a clean, fixed-length tabular representation where each unique patient is represented by exactly one row.
+    
+    \item \textbf{Methodologically Sound Mathematical Parameter Averaging:} To guarantee mathematical validity under FedAvg, we implement our federated model using a PyTorch Logistic Regression architecture. We explicitly avoid the invalid averaging of decision trees, demonstrating how continuous linear parameter vectors enable exact, transparent Federated Averaging while strictly isolating patient data behind local client boundaries.
+    
+    \item \textbf{Authentic Empirical Baseline: Isolated vs. Centralized vs. Federated:} We do not assume that federated learning is automatically superior; we rigorously prove its value by comparing it against both an idealized centralized ceiling and isolated local baselines. We empirically show that while an isolated hospital (Hospital B) collapses to 31.25\% test accuracy due to local sample scarcity, collaborative Federated Learning elevates all hospitals to 68.75\% (IID) and 75.00\% (Non-IID) accuracy, proving that collaboration saves resource-constrained clinics.
+    
+    \item \textbf{Full-Stack Reproducibility and Real-Time Web Deployment:} Moving beyond abstract code scripts, this project delivers a functional, production-ready Flask web application featuring live clinical inference, interactive model selection, benchmark comparison tables, dynamic federated network diagrams, and automated test suites.
+\end{enumerate}
+
+\section{Chapter Summary}
+\label{sec:chapter2_summary}
+
+This chapter provided a comprehensive review of the foundational literature underpinning clinical predictive modeling and privacy-preserving machine learning. We traced the evolution from heuristic point-based clinical scoring rubrics to centralized critical care machine learning on open-access EHR databases, analyzed the legal mandates (HIPAA, GDPR) that render centralized data pooling unviable, and examined the theoretical mechanics of Federated Learning. Through a structured comparative table and detailed analysis of identified challenges, we established the clear academic and engineering justification for the proposed vital-sign-based federated classification framework detailed in subsequent chapters.

@@ -1,0 +1,351 @@
+\chapter{Proposed Methodology}
+\label{ch:methodology}
+
+\section{Overview of the Proposed Privacy-Preserving Framework}
+\label{sec:method_overview}
+
+This thesis proposes an end-to-end, privacy-preserving machine learning framework designed to classify acute myocardial infarction (AMI) associated admissions using non-invasive, continuous intensive care vital signs. Standard machine learning workflows assume that all training data can be aggregated into a central repository. In clinical environments, this assumption violates legal mandates (HIPAA, GDPR) and institutional governance policies. 
+
+Our proposed architecture addresses this challenge through a multi-tiered design comprising three interconnected layers:
+\begin{enumerate}
+    \item \textbf{Data Standardization and Feature Extraction Layer:} Ingests multi-rate, irregular physiological vital signs, filters sensor artifacts, enforces a strict 24-hour observation window, and extracts 43 patient-level statistical biomarkers and hemodynamic indices. Every patient is mapped to exactly one row, eliminating temporal irregularity while preventing data leakage.
+    \item \textbf{Centralized Baseline and Benchmarking Layer:} Evaluates six foundational supervised machine learning algorithms under 5-fold stratified cross-validation on the training cohort to establish an empirical performance ceiling.
+    \item \textbf{Decentralized Federated Learning Layer:} Simulates three independent hospital nodes (Hospital A, Hospital B, and Hospital C). Each hospital trains a local model strictly on its private cohort, transmitting only weight tensors to a central coordinator. The server aggregates updates using Federated Averaging (FedAvg) across multiple communication rounds without observing any patient records.
+\end{enumerate}
+
+\section{Clinical Preprocessing and Observation Windowing}
+\label{sec:preprocessing_windowing}
+
+The raw vital sign measurements extracted from MIMIC-IV exist in a long, relational format where each row represents an individual reading of a specific \texttt{itemid} at a particular timestamp. Before feature extraction, the raw data undergoes automated preprocessing implemented in \texttt{src/preprocessing.py}:
+
+\begin{enumerate}
+    \item \textbf{Timestamp Normalization:} All timestamps are parsed using ISO-8601 formatting, converted into UTC datetime objects, and sorted chronologically per patient.
+    \item \textbf{Modality Mapping:} Item IDs are mapped to canonical categories: Heart Rate (HR), Systolic Blood Pressure (SBP), Diastolic Blood Pressure (DBP), Mean Blood Pressure (MBP), and Oxygen Saturation ($\text{SpO}_2$).
+    \item \textbf{Signal Source Reconciliation:} When arterial catheter (ABP) and non-invasive cuff (NIBP) measurements occur at the identical minute, the arterial line is selected, while NIBP serves as an auxiliary fallback.
+    \item \textbf{Physiological Filtering:} Measurements outside established clinical plausibility bounds (HR: $20$--$240$ bpm, SBP: $30$--$260$ mmHg, DBP: $20$--$160$ mmHg, MBP: $30$--$200$ mmHg, $\text{SpO}_2$: $50$--$100$\%) are eliminated.
+    \item \textbf{Observation Horizon Truncation:} Let $t_{0, i}$ denote the timestamp of the first recorded vital sign for patient $i$. Any measurement recorded at timestamp $t > t_{0, i} + 24.0\text{ hours}$ is discarded.
+\end{enumerate}
+
+\section{Feature Extraction: Transforming Time-Series into One Row Per Patient}
+\label{sec:feature_engineering}
+
+Traditional machine learning algorithms (such as Logistic Regression, Support Vector Machines, and Random Forests) cannot natively ingest variable-length, multi-rate time-series. Patients in intensive care have varying monitoring durations and sampling frequencies. To overcome this without imputing artificial values across thousands of missing timestamps, we transform the 24-hour time-series into fixed-length statistical representations.
+
+\subsection{Statistical Feature Extraction Across Core Vital Signs}
+\label{subsec:stat_features}
+
+For each of the four core vital signs ($v \in \{\text{HR}, \text{SBP}, \text{DBP}, \text{SpO}_2\}$), let $\mathbf{y}_v = [y_1, y_2, \dots, y_{n_v}]$ denote the chronological sequence of $n_v$ valid readings recorded during the 24-hour window, with corresponding elapsed timestamps $\mathbf{t}_v = [t_1, t_2, \dots, t_{n_v}]$ measured in hours from $t_{0, i}$ ($0.0 \le t_j \le 24.0$). We extract ten distinct statistical features per vital sign:
+
+\begin{enumerate}
+    \item \textbf{Mean ($\mu_v$):} The central tendency of the physiological parameter:
+    \begin{equation}
+    \mu_v = \frac{1}{n_v} \sum_{j=1}^{n_v} y_j
+    \end{equation}
+    
+    \item \textbf{Minimum ($\min_v$):} The lowest recorded value, reflecting acute hypoperfusion or extreme bradycardia:
+    \begin{equation}
+    \min_v = \min_{1 \le j \le n_v} y_j
+    \end{equation}
+    
+    \item \textbf{Maximum ($\max_v$):} The highest recorded value, reflecting severe hypertension or compensatory tachycardia:
+    \begin{equation}
+    \max_v = \max_{1 \le j \le n_v} y_j
+    \end{equation}
+    
+    \item \textbf{Sample Standard Deviation ($\sigma_v$):} A key indicator of autonomic stability and physiological reserve:
+    \begin{equation}
+    \sigma_v = \sqrt{\frac{1}{n_v - 1} \sum_{j=1}^{n_v} (y_j - \mu_v)^2} \quad (\text{defined as } 0.0 \text{ if } n_v \le 1)
+    \end{equation}
+    
+    \item \textbf{Physiological Range ($R_v$):} The total excursion span across the window:
+    \begin{equation}
+    R_v = \max_v - \min_v
+    \end{equation}
+    
+    \item \textbf{First Observed Value ($y_v^{\text{first}}$):} The baseline measurement upon ICU arrival:
+    \begin{equation}
+    y_v^{\text{first}} = y_1
+    \end{equation}
+    
+    \item \textbf{Last Observed Value ($y_v^{\text{last}}$):} The terminal measurement at the 24-hour boundary:
+    \begin{equation}
+    y_v^{\text{last}} = y_{n_v}
+    \end{equation}
+    
+    \item \textbf{Net Trajectory Change ($\Delta_v$):} The overall direction of clinical drift:
+    \begin{equation}
+    \Delta_v = y_v^{\text{last}} - y_v^{\text{first}}
+    \end{equation}
+    
+    \item \textbf{Linear Trend Slope ($\beta_v$):} The continuous hourly rate of change estimated via ordinary least squares regression (detailed in Section~\ref{subsec:ols_trend}).
+    
+    \item \textbf{Observation Count ($n_v$):} The total number of valid measurements charted, serving as a proxy for monitoring intensity.
+\end{enumerate}
+
+Across the four core vital signs, these operations generate $4 \times 10 = 40$ primary physiological features.
+
+\subsection{Ordinary Least Squares (OLS) Linear Trend Formulation}
+\label{subsec:ols_trend}
+
+Simple differences ($\Delta_v = y^{\text{last}} - y^{\text{first}}$) can be easily distorted if the initial or terminal measurement happens to be an isolated noisy outlier. To obtain an authentic, robust estimate of whether a patient's vital sign is steadily deteriorating or recovering, we fit an ordinary least squares linear regression line over all timestamp-value pairs $\{(t_j, y_j)\}_{j=1}^{n_v}$.
+
+Let $\bar{t} = \frac{1}{n_v} \sum_{j=1}^{n_v} t_j$ and $\bar{y} = \frac{1}{n_v} \sum_{j=1}^{n_v} y_j$. The linear trend slope $\beta_v$ represents the rate of change per hour in standard clinical units (e.g., $\text{mmHg}/\text{hour}$ or $\text{bpm}/\text{hour}$):
+\begin{equation}
+\label{eq:ols_slope}
+\beta_v = 
+\begin{cases}
+\frac{\sum_{j=1}^{n_v} (t_j - \bar{t})(y_j - \bar{y})}{\sum_{j=1}^{n_v} (t_j - \bar{t})^2}, & \text{if } n_v \ge 2 \text{ and } \sum_{j=1}^{n_v} (t_j - \bar{t})^2 > 10^{-6} \\
+0.0, & \text{otherwise.}
+\end{cases}
+\end{equation}
+
+A positive $\beta_{\text{HR}}$ indicates progressive tachycardia, whereas a negative $\beta_{\text{SBP}}$ denotes insidiously worsening hypotension—a hallmark clinical triad of cardiogenic decompensation.
+
+\subsection{Derived Clinical Hemodynamic Biomarkers}
+\label{subsec:derived_biomarkers}
+
+In addition to individual vital sign statistics, human clinicians rely upon composite indices that capture multi-system interactions. We engineer three clinically established biomarkers:
+
+\begin{enumerate}
+    \item \textbf{Mean Shock Index ($\text{SI}_{\text{mean}}$):} Originally introduced by \citet{allgower1967shock}, the Shock Index is the ratio of Heart Rate to Systolic Blood Pressure:
+    \begin{equation}
+    \text{SI}_{\text{mean}} = \frac{\mu_{\text{HR}}}{\mu_{\text{SBP}}}
+    \end{equation}
+    In healthy adults, the normal Shock Index ranges from $0.5$ to $0.7$. A Shock Index exceeding $0.9$ indicates severe left ventricular dysfunction and systemic hypoperfusion, strongly associated with acute myocardial infarction.
+    
+    \item \textbf{Peak Shock Index ($\text{SI}_{\text{max}}$):} Captures the most severe transient hemodynamic collapse experienced during the 24 hours:
+    \begin{equation}
+    \text{SI}_{\text{max}} = \frac{\max_{\text{HR}}}{\min_{\text{SBP}}}
+    \end{equation}
+    
+    \item \textbf{Mean Pulse Pressure ($\text{PP}_{\text{mean}}$):} Defined as the difference between mean systolic and diastolic pressures:
+    \begin{equation}
+    \text{PP}_{\text{mean}} = \mu_{\text{SBP}} - \mu_{\text{DBP}}
+    \end{equation}
+    Pulse pressure reflects arterial compliance and stroke volume. Narrow pulse pressure ($< 30$ mmHg) indicates decreased cardiac output, typical of acute cardiogenic shock.
+\end{enumerate}
+
+Combining the 40 vital sign statistics with these 3 composite indices yields a final feature vector of dimension $D = 43$. Each patient's admission is thus represented as a single vector $\mathbf{x}_i \in \mathbb{R}^{43}$, with binary label $y_i \in \{0, 1\}$.
+
+\subsection{Inference-Time Compatibility for Web Applications}
+\label{subsec:inference_compat}
+
+A major engineering challenge in clinical AI deployment is the discrepancy between complex training pipelines and real-time inference. When a clinician utilizes our web application, they may enter only a single set of vital signs (e.g., $\text{HR} = 110$, $\text{SBP} = 90$, $\text{DBP} = 60$, $\text{SpO}_2 = 92$).
+
+To guarantee 100\% mathematical consistency, we designed \texttt{extract\_features\_from\_single\_reading()} in \texttt{src/feature\_engineering.py}. For a single reading:
+\begin{align*}
+\mu_v = \min_v = \max_v = y_v^{\text{first}} = y_v^{\text{last}} = \text{Reading}_v \\
+\sigma_v = 0.0, \quad R_v = 0.0, \quad \Delta_v = 0.0, \quad \beta_v = 0.0, \quad n_v = 1
+\end{align*}
+Composite markers are computed directly: $\text{SI} = \frac{\text{HR}}{\text{SBP}}$ and $\text{PP} = \text{SBP} - \text{DBP}$. This vector is scaled using the exact training-fitted parameters, ensuring identical inference logic.
+
+\section{Patient-Level Dataset Partitioning and Standardization}
+\label{sec:dataset_partitioning}
+
+\subsection{Patient-Level Stratified Train/Test Splitting}
+\label{subsec:stratified_split}
+
+To prevent data leakage, the 80 unique patients were partitioned at the subject level into:
+\begin{itemize}
+    \item \textbf{Training Cohort ($\mathcal{D}_{\text{train}}$):} 80\% of the cohort ($N_{\text{train}} = 64$ patients: 32 AMI-positive, 32 Control).
+    \item \textbf{Held-Out Evaluation Cohort ($\mathcal{D}_{\text{test}}$):} 20\% of the cohort ($N_{\text{test}} = 16$ patients: 8 AMI-positive, 8 Control).
+\end{itemize}
+The split was performed with fixed random seed 42 and stratified on $y_i$, ensuring identical class balance across both sets. The held-out test cohort was sealed and never accessed during cross-validation, hyperparameter tuning, or local federated training.
+
+\subsection{Training-Only StandardScaler Parameter Estimation}
+\label{subsec:feature_scaling}
+
+Clinical features span vastly different physical units and magnitudes (e.g., Heart Rate $\approx 88$ bpm, Observation Count $\approx 150$, Trend $\approx 0.05$). Unscaled features bias distance-based algorithms (KNN, SVM) and slow gradient convergence in logistic regression.
+
+We apply Z-score standardization:
+\begin{equation}
+z_{i, j} = \frac{x_{i, j} - \hat{\mu}_j}{\hat{\sigma}_j}
+\end{equation}
+\textbf{Leakage Prevention Rule:} The mean $\hat{\mu}_j$ and standard deviation $\hat{\sigma}_j$ for each feature $j \in \{1, \dots, 43\}$ are estimated strictly using $\mathcal{D}_{\text{train}}$:
+\begin{equation}
+\hat{\mu}_j = \frac{1}{64} \sum_{i \in \mathcal{D}_{\text{train}}} x_{i, j}, \quad \hat{\sigma}_j = \sqrt{\frac{1}{63} \sum_{i \in \mathcal{D}_{\text{train}}} (x_{i, j} - \hat{\mu}_j)^2}
+\end{equation}
+The fitted scaler was serialized to \texttt{models/scaler.joblib} and applied transformations to $\mathcal{D}_{\text{test}}$ and live web inputs without re-estimating statistics.
+
+\section{Centralized Machine Learning Baselines}
+\label{sec:centralized_models}
+
+To establish the empirical performance ceiling, we implemented six foundational algorithms using Scikit-Learn \citep{pedregosa2011scikit}:
+\begin{enumerate}
+    \item \textbf{Logistic Regression:} A regularized linear model optimizing the log-likelihood:
+    \begin{equation}
+    P(y_i=1 \mid \mathbf{z}_i) = \sigma(\mathbf{w}^\top \mathbf{z}_i + b) = \frac{1}{1 + e^{-(\mathbf{w}^\top \mathbf{z}_i + b)}}
+    \end{equation}
+    with $L_2$ penalty: $\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|_2^2 + C \sum_{i=1}^{N} \mathcal{L}_{\text{BCE}}(y_i, \hat{y}_i)$.
+    \item \textbf{Random Forest:} An ensemble of $B$ bootstrap-aggregated decision trees with random feature subspace sampling \citep{breiman2001random}.
+    \item \textbf{Decision Tree (CART):} A single interpretable binary decision tree using Gini impurity or entropy splitting criteria.
+    \item \textbf{Support Vector Machine (SVM):} Maximizes the soft margin separating hyperplane: $\min_{\mathbf{w}, b, \xi} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i} \xi_i$, with Platt scaling for probability calibration.
+    \item \textbf{K-Nearest Neighbours (KNN):} Non-parametric instance-based classifier computing Euclidean or Manhattan distance to the $k$ closest training points.
+    \item \textbf{Gradient Boosting:} Sequentially trains decision stumps to minimize residual binomial deviance.
+\end{enumerate}
+
+Hyperparameters were systematically tuned using 5-Fold Stratified Cross-Validation on $\mathcal{D}_{\text{train}}$ via grid search optimizing ROC-AUC, detailed in Table~\ref{tab:hyperparam_grids}.
+
+\begin{table}[htbp]
+\centering
+\caption{Hyperparameter Search Grids for Centralized Model Optimization (5-Fold Stratified CV)}
+\label{tab:hyperparam_grids}
+\begin{tabular}{@{}llp{6.5cm}@{}}
+\toprule
+\textbf{Model Algorithm} & \textbf{Tuned Hyperparameters} & \textbf{Search Space Values} \\ \midrule
+Logistic Regression & Regularization $C$, Solver & $C \in \{0.01, 0.1, 1.0, 5.0, 10.0\}$, Solver $\in \{\text{lbfgs, liblinear}\}$ \\
+Random Forest & Trees ($n$), Max Depth, Split Criteria & $n \in \{50, 100, 150\}$, Depth $\in \{3, 5, 8, \text{None}\}$, Leaf $\in \{1, 2\}$ \\
+Decision Tree & Max Depth, Criterion, Min Split & Depth $\in \{2, 3, 4, 6\}$, Criterion $\in \{\text{gini, entropy}\}$, Split $\in \{2, 4\}$ \\
+Support Vector Machine & Regularization $C$, Kernel, Gamma & $C \in \{0.1, 1.0, 10.0\}$, Kernel $\in \{\text{linear, rbf}\}$, Gamma $\in \{\text{scale, auto}\}$ \\
+K-Nearest Neighbours & Neighbours ($k$), Weighting, Metric & $k \in \{3, 5, 7, 9\}$, Weight $\in \{\text{uniform, distance}\}$, Metric $\in \{\text{euclidean, manhattan}\}$ \\
+Gradient Boosting & Estimators, Learning Rate, Depth & Estimators $\in \{30, 50, 100\}$, LR $\in \{0.01, 0.05, 0.1\}$, Depth $\in \{2, 3, 4\}$ \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Decentralized Multi-Hospital Architecture and Topology}
+\label{sec:decentralized_topology}
+
+To simulate a realistic multi-institutional healthcare environment, the 64 training patients were distributed across three independent hospital client nodes:
+\begin{itemize}
+    \item \textbf{Hospital A (Urban Medical Center):} Large metropolitan tertiary hospital.
+    \item \textbf{Hospital B (University Hospital):} Academic medical center with regional referrals.
+    \item \textbf{Hospital C (Regional Health Center):} Community-based suburban clinic.
+\end{itemize}
+
+Every patient's record was allocated exclusively to one hospital. Local hospital datasets $\mathcal{D}_A, \mathcal{D}_B, \mathcal{D}_C$ were isolated behind distinct Python object boundaries (\texttt{FederatedHospitalClient} in \texttt{src/federated\_client.py}), ensuring that local training occurs strictly in local memory.
+
+\subsection{Client Partitioning: IID versus Non-IID Statistical Distributions}
+\label{subsec:iid_non_iid}
+
+We investigated two distinct data distribution environments to evaluate model robustness:
+
+\subsubsection{Setting A: Independent and Identically Distributed (IID)}
+Patients in $\mathcal{D}_{\text{train}}$ were randomly partitioned across the three hospitals while strictly maintaining identical class balance:
+\begin{itemize}
+    \item Hospital A: 22 patients (11 AMI, 11 Control — Prevalence: 50.0\%)
+    \item Hospital B: 22 patients (11 AMI, 11 Control — Prevalence: 50.0\%)
+    \item Hospital C: 20 patients (10 AMI, 10 Control — Prevalence: 50.0\%)
+\end{itemize}
+
+\subsubsection{Setting B: Non-IID Statistical Heterogeneity (Clinical Prevalence Skew)}
+In real-world networks, hospitals specialize in distinct clinical domains. We designed a controlled Non-IID distribution simulating institutional specialization:
+\begin{itemize}
+    \item \textbf{Hospital A (Specialty Cardiac Emergency Center):} High disease prevalence. 21 patients (16 AMI, 5 Control — Prevalence: 76.2\%).
+    \item \textbf{Hospital B (General Community Hospital):} Low disease prevalence. 22 patients (5 AMI, 17 Control — Prevalence: 22.7\%).
+    \item \textbf{Hospital C (Regional Clinic):} Balanced cohort. 21 patients (11 AMI, 10 Control — Prevalence: 52.4\%).
+\end{itemize}
+
+This skewed distribution forces local client gradients to pull in conflicting directions, presenting an authentic test of federated convergence.
+
+\section{Federated Learning Mathematical Formulation (FedAvg)}
+\label{sec:fedavg_formulation}
+
+\subsection{Why Parameter Averaging Requires Continuous Weight Representations}
+\label{subsec:why_continuous_weights}
+
+As established in Section~\ref{sec:challenges_identified}, Federated Averaging requires computing linear combinations of model parameters. We formulate our federated classifier using a PyTorch Logistic Regression architecture (\texttt{PyTorchLogisticRegression} in \texttt{src/federated\_client.py}) parameterized by weight vector $\mathbf{w} \in \mathbb{R}^{43}$ and scalar bias $b \in \mathbb{R}$:
+\begin{equation}
+f_{\theta}(\mathbf{z}) = \sigma(\mathbf{w}^\top \mathbf{z} + b) = \frac{1}{1 + e^{-(\mathbf{w}^\top \mathbf{z} + b)}}
+\end{equation}
+where $\theta = \{\mathbf{w}, b\}$. Because $\mathbf{w}$ and $b$ are continuous tensors, their weighted average is mathematically well-defined and guarantees a valid linear decision boundary.
+
+\subsection{Local Client Optimization}
+\label{subsec:local_optimization}
+
+At communication round $t$, the central server broadcasts global parameters $\theta_t = \{\mathbf{w}_t, b_t\}$ to all client hospitals. Each hospital $k \in \{A, B, C\}$ loads $\theta_t$ and initializes its local model.
+
+Hospital $k$ trains locally for $E$ epochs using mini-batch Stochastic Gradient Descent (SGD) with learning rate $\eta$ and weight decay $\lambda$. For local dataset $\mathcal{D}_k = \{(\mathbf{z}_{i}, y_{i})\}_{i=1}^{n_k}$, the local objective is Binary Cross-Entropy:
+\begin{equation}
+\label{eq:local_loss}
+\mathcal{L}_k(\theta) = -\frac{1}{n_k} \sum_{i=1}^{n_k} \left[ y_i \log f_{\theta}(\mathbf{z}_i) + (1 - y_i) \log(1 - f_{\theta}(\mathbf{z}_i)) \right] + \frac{\lambda}{2} \|\mathbf{w}\|_2^2
+\end{equation}
+
+For mini-batch $\mathcal{B} \subset \mathcal{D}_k$, parameters are updated iteratively:
+\begin{equation}
+\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla_{\mathbf{w}} \mathcal{L}_{\mathcal{B}}(\theta), \quad b \leftarrow b - \eta \nabla_{b} \mathcal{L}_{\mathcal{B}}(\theta)
+\end{equation}
+After $E = 5$ local epochs, client $k$ produces updated parameters $\theta_k^{(t)} = \{\mathbf{w}_k^{(t)}, b_k^{(t)}\}$.
+
+\subsection{Federated Averaging (FedAvg) Server Aggregation}
+\label{subsec:server_aggregation}
+
+Clients transmit only their updated parameter tensors $\{\mathbf{w}_k^{(t)}, b_k^{(t)}\}$ and sample sizes $n_k$ back to the coordinator. The central server computes the sample-weighted average:
+\begin{equation}
+\label{eq:fedavg_weights}
+\mathbf{w}_{t+1} = \sum_{k=1}^K \frac{n_k}{N} \mathbf{w}_k^{(t)}, \quad b_{t+1} = \sum_{k=1}^K \frac{n_k}{N} b_k^{(t)}
+\end{equation}
+where $N = \sum_{k=1}^K n_k = 64$. The updated global parameters $\theta_{t+1}$ are evaluated on the held-out global test set $\mathcal{D}_{\text{test}}$ and broadcast to clients for round $t+1$.
+
+\subsection{Communication Overhead and Privacy Analysis}
+\label{subsec:comm_privacy}
+
+The communication payload per round is remarkably lightweight:
+\begin{itemize}
+    \item Weight tensor $\mathbf{w}$: 43 float32 values ($43 \times 4 = 172$ bytes).
+    \item Bias scalar $b$: 1 float32 value (4 bytes).
+    \item Total update vector: 176 bytes per client.
+\end{itemize}
+Across three clients with bidirectional transmission (downlink and uplink), total communication overhead is only $176 \times 2 \times 3 = 1,056$ bytes (approx 1.05 KB) per round. Over 15 rounds, total data exchanged is under 16 KB. 
+
+\textbf{Privacy Guarantee:} The central server never observes raw patient measurements, timestamps, or clinical outcomes. Only aggregate statistical parameter vectors leave the hospital firewall.
+
+\section{System Flowchart and Procedural Pseudocode}
+\label{sec:flowchart_pseudocode}
+
+The operational workflow of the proposed system is formalized in Algorithm~\ref{alg:centralized} (Centralized Pipeline) and Algorithm~\ref{alg:federated} (Federated Learning Pipeline).
+
+\begin{algorithm}[htbp]
+\caption{Centralized Preprocessing and Benchmark Pipeline}
+\label{alg:centralized}
+\begin{algorithmic}[1]
+\REQUIRE Raw vitals DataFrame $\mathcal{D}_{\text{raw}}$, MIMIC cohort metadata
+\ENSURE Trained centralized models, scaler $\mathcal{S}$, evaluation metrics
+\STATE Parse timestamps $t$ and filter implausible physiological outliers using clinical bounds
+\STATE Truncate observations to window: $0 \le t - t_{0, i} \le 24.0$ hours
+\FOR{each patient $i \in \{1, \dots, N\}$}
+    \FOR{each vital $v \in \{\text{HR, SBP, DBP, SpO}_2\}$}
+        \STATE Compute $\mu_v, \min_v, \max_v, \sigma_v, R_v, y_v^{\text{first}}, y_v^{\text{last}}, \Delta_v, \beta_v, n_v$
+    \ENDFOR
+    \STATE Calculate Shock Index $\text{SI} = \mu_{\text{HR}}/\mu_{\text{SBP}}$ and Pulse Pressure $\text{PP} = \mu_{\text{SBP}} - \mu_{\text{DBP}}$
+    \STATE Assemble patient feature vector $\mathbf{x}_i \in \mathbb{R}^{43}$ and label $y_i \in \{0, 1\}$
+\ENDFOR
+\STATE Perform patient-level stratified split: $\mathcal{D}_{\text{train}}$ (64 pts), $\mathcal{D}_{\text{test}}$ (16 pts)
+\STATE Fit $\mathcal{S} \leftarrow \text{StandardScaler}(\mathcal{D}_{\text{train}})$; transform $\mathcal{D}_{\text{train}}$ and $\mathcal{D}_{\text{test}}$
+\FOR{each model architecture $m \in \{\text{LR, RF, DT, SVM, KNN, GB}\}$}
+    \STATE Tune hyperparameters via 5-Fold Stratified CV on $\mathcal{D}_{\text{train}}$
+    \STATE Evaluate optimal model on $\mathcal{D}_{\text{test}}$; serialize model artifact
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Federated Averaging (FedAvg) Clinical Training Pipeline}
+\label{alg:federated}
+\begin{algorithmic}[1]
+\REQUIRE Standardized training cohort $\mathcal{D}_{\text{train}}$, held-out test cohort $\mathcal{D}_{\text{test}}$, rounds $R=15$, local epochs $E=5$, learning rate $\eta=0.08$
+\ENSURE Final global model $\theta_R = \{\mathbf{w}_R, b_R\}$
+\STATE Partition $\mathcal{D}_{\text{train}}$ across $K=3$ clients: $\mathcal{D}_A, \mathcal{D}_B, \mathcal{D}_C$ ($n_k = |\mathcal{D}_k|$)
+\STATE Server initializes global parameters: $\mathbf{w}_0 \sim \mathcal{N}(0, 0.01), b_0 = 0.0$
+\FOR{round $t = 0$ to $R-1$}
+    \FOR{each client $k \in \{1, \dots, K\}$ \textbf{in parallel}}
+        \STATE Client $k$ receives global parameters: $\mathbf{w}_k \leftarrow \mathbf{w}_t, b_k \leftarrow b_t$
+        \FOR{epoch $e = 1$ to $E$}
+            \FOR{batch $(\mathbf{z}_{\mathcal{B}}, \mathbf{y}_{\mathcal{B}}) \subset \mathcal{D}_k$}
+                \STATE Compute forward loss $\mathcal{L}_k$ (Eq.~\ref{eq:local_loss})
+                \STATE Update $\mathbf{w}_k \leftarrow \mathbf{w}_k - \eta \nabla_{\mathbf{w}} \mathcal{L}_k, \quad b_k \leftarrow b_k - \eta \nabla_{b} \mathcal{L}_k$
+            \ENDFOR
+        \ENDFOR
+        \STATE Transmit updated parameters $\{\mathbf{w}_k^{(t)}, b_k^{(t)}\}$ to server
+    \ENDFOR
+    \STATE Server aggregates parameters (FedAvg):
+    \STATE $\mathbf{w}_{t+1} \leftarrow \sum_{k=1}^K \frac{n_k}{N} \mathbf{w}_k^{(t)}, \quad b_{t+1} \leftarrow \sum_{k=1}^K \frac{n_k}{N} b_k^{(t)}$
+    \STATE Server evaluates $\theta_{t+1}$ on held-out test set $\mathcal{D}_{\text{test}}$; logs metrics
+\ENDFOR
+\STATE Wrap $\theta_R$ into Scikit-learn inference wrapper; save to \texttt{models/federated\_logistic\_regression.joblib}
+\end{algorithmic}
+\end{algorithm}
+
+\section{Chapter Summary}
+\label{sec:chapter4_summary}
+
+This chapter detailed the complete methodological framework developed in this thesis. We formalized the 24-hour observation horizon and the feature engineering pipeline that transforms irregular physiological chart events into 43 tabular biomarkers, mapping each patient to one row. We established the patient-level stratified splitting and standardization protocols, outlined centralized hyperparameter tuning grids, and formulated the multi-hospital decentralized topology. Finally, we derived the Federated Averaging algorithm for PyTorch Logistic Regression, demonstrating how continuous linear parameter vectors enable mathematically valid aggregation and privacy preservation with minimal communication overhead.
