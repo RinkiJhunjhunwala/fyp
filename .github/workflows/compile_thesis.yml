@@ -1,0 +1,30 @@
+name: Compile Thesis PDF
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'thesis/**'
+      - '.github/workflows/compile_thesis.yml'
+  workflow_dispatch:
+
+jobs:
+  build_pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX Document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: thesis_nita.tex
+          working_directory: thesis
+          args: -pdf -file-line-error -interaction=nonstopmode
+
+      - name: Upload Compiled Thesis PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIT_Agartala_Thesis_Report
+          path: thesis/thesis_nita.pdf
+          if-no-files-found: error
