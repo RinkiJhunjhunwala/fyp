@@ -177,6 +177,7 @@ preamble = r"""\documentclass[12pt,a4paper,oneside]{report}
 \titlespacing*{\subsubsection}{0pt}{8pt}{3pt}
 
 % Headers and Footers
+\setlength{\headheight}{14.5pt}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\small\nouppercase{\rightmark}}

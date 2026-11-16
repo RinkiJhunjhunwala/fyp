@@ -44,6 +44,7 @@
 \titlespacing*{\subsubsection}{0pt}{8pt}{3pt}
 
 % Headers and Footers
+\setlength{\headheight}{14.5pt}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\small\nouppercase{\rightmark}}
@@ -1246,7 +1247,7 @@ The empirical results in Table~\ref{tab:centralized_metrics} present a fascinati
 
 In modern computer science, students and practitioners frequently assume that complex non-linear models—especially tree ensembles like Random Forests and Gradient Boosting—will automatically dominate simpler linear models. Understanding why this assumption broke down in our experiments provides critical insight into the realities of biomedical machine learning:
 
-\subsection{1. The Small-Sample Overfitting Trap ($N=64$ vs $D=43$)}
+\subsection{1. The Small-Sample Overfitting Trap (\texorpdfstring{=64$ vs =43$}{N=64 vs D=43})}
 In our training dataset, we possessed exactly $N_{\text{train}} = 64$ patients characterized by $D = 43$ statistical features. A Random Forest constructs dozens of deep decision trees, each creating recursive orthogonal splits. In a high-dimensional space where the number of training samples is on the same order of magnitude as the number of features ($N \approx D$), tree ensembles possess excessive representational capacity. During cross-validation, the trees memorized random statistical fluctuations unique to individual patients in the training set (e.g., an idiosyncratic combination of high respiratory rate and low diastolic variance). When evaluated on the unseen test cohort, these memorized rules failed completely, collapsing Random Forest accuracy to $50.00\%$ (equivalent to random chance).
 
 \subsection{2. Occam's Razor and Smooth Linear Regularization}
