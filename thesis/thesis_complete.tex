@@ -15,9 +15,8 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{url}
-\usepackage{microtype}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage[pdftex,colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
 
 % 1.5 line spacing as per NIT Agartala thesis guidelines
 \onehalfspacing
@@ -101,218 +100,6 @@
 {
   \vfill
 }
-
-% Embed BibTeX references
-\begin{filecontents*}{\jobname.bib}
-@article{johnson2023mimic,
-  author    = {Johnson, Alistair E. W. and Bulgarelli, Lucas and Shen, Lu and Gayles, Alvin and Shammout, Ayad and Horng, Steven and Pollard, Tom J. and Hao, Sicheng and Moody, Benjamin and Gow, Brian and Lehman, Li-wei H. and Celi, Leo Anthony and Mark, Roger G.},
-  title     = {MIMIC-IV, a freely accessible electronic health record dataset},
-  journal   = {Scientific Data},
-  volume    = {10},
-  number    = {1},
-  pages     = {1--12},
-  year      = {2023},
-  publisher = {Nature Publishing Group}
-}
-
-@article{mcmahan2017communication,
-  author    = {McMahan, Brendan and Moore, Eider and Ramage, Daniel and Hampson, Seth and y Arcas, Blaise Aguera},
-  title     = {Communication-Efficient Learning of Deep Networks from Decentralized Data},
-  journal   = {Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS)},
-  pages     = {1273--1282},
-  year      = {2017}
-}
-
-@article{li2020federated,
-  author    = {Li, Tian and Sahu, Anit Kumar and Talwalkar, Ameet and Smith, Virginia},
-  title     = {Federated optimization in heterogeneous networks},
-  journal   = {Proceedings of Machine Learning and Systems (MLSys)},
-  volume    = {2},
-  pages     = {429--450},
-  year      = {2020}
-}
-
-@article{kaissis2020secure,
-  author    = {Kaissis, Georgios A. and Makowski, Marcus R. and R{\"u}ckert, Daniel and Braren, Rickmer F.},
-  title     = {Secure, privacy-preserving and federated machine learning in medical imaging},
-  journal   = {Nature Machine Intelligence},
-  volume    = {2},
-  number    = {6},
-  pages     = {305--311},
-  year      = {2020}
-}
-
-@article{rieke2020future,
-  author    = {Rieke, Nicola and Hancox, Jonny and Li, Wenqi and Milletar{\`i}, Fausto and Roth, Holger R. and Albarqouni, Shadi and Bakas, Spyridon and Galtier, Mathieu N. and Landman, Bennett A. and Maier-Hein, Klaus and others},
-  title     = {The future of digital health with federated learning},
-  journal   = {NPJ Digital Medicine},
-  volume    = {3},
-  number    = {1},
-  pages     = {1--7},
-  year      = {2020}
-}
-
-@article{krumholz2018cardiovascular,
-  author    = {Krumholz, Harlan M.},
-  title     = {Big data and new knowledge in medicine: the thinking, training, and tools needed for a learning health system},
-  journal   = {Health Affairs},
-  volume    = {33},
-  number    = {7},
-  pages     = {1163--1170},
-  year      = {2014}
-}
-
-@article{thygesen2018fourth,
-  author    = {Thygesen, Kristian and Alpert, Joseph S. and Jaffe, Allan S. and Chaitman, Bernard R. and Bax, Jeroen J. and Morrow, David A. and White, Harvey D.},
-  title     = {Fourth universal definition of myocardial infarction (2018)},
-  journal   = {Journal of the American College of Cardiology},
-  volume    = {72},
-  number    = {18},
-  pages     = {2231--2264},
-  year      = {2018}
-}
-
-@article{antman2000timi,
-  author    = {Antman, Elliott M. and Cohen, Marc and Bernink, Peter J. L. M. and McCabe, Carolyn H. and Horacek, Thomas and Papuchis, George and Mautner, Bernard and Corbalan, Ramon and Radley, David and Braunwald, Eugene},
-  title     = {The TIMI risk score for unstable angina/non-ST elevation MI: a method for prognostication and therapeutic decision making},
-  journal   = {JAMA},
-  volume    = {284},
-  number    = {7},
-  pages     = {835--842},
-  year      = {2000}
-}
-
-@article{allam2021federated,
-  author    = {Allam, Zaheer and Jones, David S.},
-  title     = {Future Internet of Things (IoT) platforms for epidemic management: Genomic, clinical and social data integration through federated learning},
-  journal   = {Healthcare},
-  volume    = {9},
-  number    = {6},
-  pages     = {710},
-  year      = {2021}
-}
-
-@article{dayan2021federated,
-  author    = {Dayan, Ittai and Roth, Holger R. and Zhong, Aoxiao and Harouni, Ahmed and Gentili, Amilcare and Abidin, Anas Z. and Liu, Alexander and Costa, Anthony B. and Wood, Bradford J. and Tsai, Chih-Sheng and others},
-  title     = {Federated learning for predicting clinical outcomes in patients with COVID-19},
-  journal   = {Nature Medicine},
-  volume    = {27},
-  number    = {10},
-  pages     = {1735--1743},
-  year      = {2021}
-}
-
-@article{rajaram2022privacy,
-  author    = {Rajaram, Sriram and Sundaram, Meenakshi and Narayanan, Sridhar},
-  title     = {Privacy-preserving machine learning in electronic health records: A survey of methods and applications},
-  journal   = {IEEE Reviews in Biomedical Engineering},
-  volume    = {15},
-  pages     = {182--199},
-  year      = {2022}
-}
-
-@article{breiman2001random,
-  author    = {Breiman, Leo},
-  title     = {Random forests},
-  journal   = {Machine Learning},
-  volume    = {45},
-  number    = {1},
-  pages     = {5--32},
-  year      = {2001}
-}
-
-@book{friedman2001elements,
-  author    = {Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome},
-  title     = {The Elements of Statistical Learning: Data Mining, Inference, and Prediction},
-  edition   = {2nd},
-  publisher = {Springer},
-  year      = {2009}
-}
-
-@article{pedregosa2011scikit,
-  author    = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and others},
-  title     = {Scikit-learn: Machine learning in Python},
-  journal   = {Journal of Machine Learning Research},
-  volume    = {12},
-  pages     = {2825--2830},
-  year      = {2011}
-}
-
-@article{paszke2019pytorch,
-  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and others},
-  title     = {PyTorch: An imperative style, high-performance deep learning library},
-  journal   = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {32},
-  pages     = {8026--8037},
-  year      = {2019}
-}
-
-@article{konevcny2016federated,
-  author    = {Kone{\v{c}}n{\'y}, Jakub and McMahan, H. Brendan and Yu, Felix X. and Richt{\'a}rik, Peter and Suresh, Ananda Theertha and Bacon, Dave},
-  title     = {Federated learning: Strategies for improving communication efficiency},
-  journal   = {arXiv preprint arXiv:1610.05492},
-  year      = {2016}
-}
-
-@article{kairouz2021advances,
-  author    = {Kairouz, Peter and McMahan, H. Brendan and Avent, Brendan and Bellet, Aur{\'e}lien and Bennis, Mehdi and Bhagoji, Arjun Nitin and Bonawitz, Kallista and Charles, Zachary and Cormode, Graham and Cummings, Rachel and others},
-  title     = {Advances and open problems in federated learning},
-  journal   = {Foundations and Trends in Machine Learning},
-  volume    = {14},
-  number    = {1--2},
-  pages     = {1--210},
-  year      = {2021}
-}
-
-@article{bonawitz2017practical,
-  author    = {Bonawitz, Keith and Ivanov, Vladimir and Kreuter, Ben and Marcedone, Antonio and McMahan, H. Brendan and Patel, Sarvar and Ramage, Daniel and Segal, Aaron and Seth, Karn},
-  title     = {Practical secure aggregation for privacy-preserving machine learning},
-  journal   = {Proceedings of the ACM SIGSAC Conference on Computer and Communications Security (CCS)},
-  pages     = {1175--1191},
-  year      = {2017}
-}
-
-@article{dwork2014algorithmic,
-  author    = {Dwork, Cynthia and Roth, Aaron},
-  title     = {The algorithmic foundations of differential privacy},
-  journal   = {Foundations and Trends in Theoretical Computer Science},
-  volume    = {9},
-  number    = {3--4},
-  pages     = {211--407},
-  year      = {2014}
-}
-
-@article{radford2018shock,
-  author    = {Radford, Martha J. and Krumholz, Harlan M.},
-  title     = {Risk adjustment in cardiovascular quality improvement},
-  journal   = {Circulation},
-  volume    = {100},
-  number    = {4},
-  pages     = {337--342},
-  year      = {1999}
-}
-
-@article{allgower1967shock,
-  author    = {Allg{\"o}wer, Martin and Burri, Christian},
-  title     = {Schockindex},
-  journal   = {Deutsche Medizinische Wochenschrift},
-  volume    = {92},
-  number    = {43},
-  pages     = {1947--1950},
-  year      = {1967}
-}
-
-@article{goldberger2000physiobank,
-  author    = {Goldberger, Ary L. and Amaral, Luis A. N. and Glass, Leon and Hausdorff, Jeffrey M. and Ivanov, Plamen Ch. and Mark, Roger G. and Mietus, Joseph E. and Moody, George B. and Peng, Chung-Kang and Stanley, H. Eugene},
-  title     = {PhysioBank, PhysioToolkit, and PhysioNet: components of a new research resource for complex physiologic signals},
-  journal   = {Circulation},
-  volume    = {101},
-  number    = {23},
-  pages     = {e215--e220},
-  year      = {2000}
-}
-\end{filecontents*}
-
 
 \begin{document}
 
@@ -583,7 +370,6 @@ Next, we simulated a distributed healthcare ecosystem across three distinct hosp
 \cleardoublepage
 \pagenumbering{arabic}
 \setcounter{page}{1}
-
 \chapter{Introduction}
 \label{ch:introduction}
 
@@ -642,6 +428,7 @@ The remainder of this thesis is systematically organized into the following chap
     
     \item \textbf{Chapter 6: Conclusion and Future Scope} summarizes the principal technical and clinical conclusions established by this research, outlines real-world system limitations, and proposes promising directions for future exploration, including differential privacy integration, multimodal waveform fusion, and clinical prospective deployment.
 \end{itemize}
+
 
 \chapter{Related Works}
 \label{ch:related_works}
@@ -776,6 +563,7 @@ In direct response to the limitations and challenges identified above, this thes
 \label{sec:chapter2_summary}
 
 This chapter provided a comprehensive review of the foundational literature underpinning clinical predictive modeling and privacy-preserving machine learning. We traced the evolution from heuristic point-based clinical scoring rubrics to centralized critical care machine learning on open-access EHR databases, analyzed the legal mandates (HIPAA, GDPR) that render centralized data pooling unviable, and examined the theoretical mechanics of Federated Learning. Through a structured comparative table and detailed analysis of identified challenges, we established the clear academic and engineering justification for the proposed vital-sign-based federated classification framework detailed in subsequent chapters.
+
 
 \chapter{Dataset Description and Formation}
 \label{ch:dataset}
@@ -1001,6 +789,7 @@ In adherence to rigorous academic principles, several inherent limitations of th
 \label{sec:chapter3_summary}
 
 This chapter documented the derivation and quality control of the experimental dataset. Beginning with over 83,000 cardiovascular patients in MIMIC-IV v3.1, we implemented chunk-based filtering to extract 287,710 raw vital measurements. We discovered and verified that exactly 80 patients possessed continuous intensive care chart events, forming a perfectly balanced cohort of 40 AMI-positive and 40 control subjects. By applying clinical physiological bounds and enforcing an explicit 24-hour observation horizon anchored to each patient's initial vital sign, we eliminated sensor artifacts and lookahead leakage, preparing 12,413 validated time-series measurements for feature engineering.
+
 
 \chapter{Proposed Methodology}
 \label{ch:methodology}
@@ -1354,6 +1143,7 @@ The operational workflow of the proposed system is formalized in Algorithm~\ref{
 
 This chapter detailed the complete methodological framework developed in this thesis. We formalized the 24-hour observation horizon and the feature engineering pipeline that transforms irregular physiological chart events into 43 tabular biomarkers, mapping each patient to one row. We established the patient-level stratified splitting and standardization protocols, outlined centralized hyperparameter tuning grids, and formulated the multi-hospital decentralized topology. Finally, we derived the Federated Averaging algorithm for PyTorch Logistic Regression, demonstrating how continuous linear parameter vectors enable mathematically valid aggregation and privacy preservation with minimal communication overhead.
 
+
 \chapter{Results and Analysis}
 \label{ch:results}
 
@@ -1616,6 +1406,7 @@ Across both models, three clinical patterns emerged:
     \item \textbf{Heart Rate Variability Features (\texttt{HR\_std}, \texttt{HR\_max}, \texttt{HR\_range}):} Autonomic instability, reflected by wide fluctuations in heart rate, was the single strongest predictor of AMI.
     \item \textbf{Blood Pressure Deterioration Trends (\texttt{SBP\_trend}, \texttt{SBP\_min}):} A negative hourly slope in systolic blood pressure was strongly correlated with infarction, capturing the early onset of cardiogenic shock.
     \item \textbf{Derived Hemodynamic Indices (\texttt{shock\_index\_mean}, \texttt{pulse\_pressure\_mean}):} Our engineered composite markers ranked consistently within the top ten features, validating the clinical utility of multi-system physiological ratios.
+\end{enumerate}
 
 \section{Real-Time Web Application Implementation and Verification}
 \label{sec:webapp_verification}
@@ -1633,6 +1424,7 @@ The application was validated using automated integration tests (\texttt{tests/t
 \label{sec:chapter5_summary}
 
 This chapter presented the definitive empirical results of this thesis. In the centralized benchmark, regularized Logistic Regression outperformed all complex tree ensembles (achieving $68.75\%$ accuracy and $0.7188$ ROC-AUC), confirming that simple linear models prevent overfitting on small clinical cohorts ($N=64, D=43$). In the isolated baseline, Hospital B collapsed to $31.25\%$ accuracy, demonstrating the severe hazard of single-institution AI. Finally, Federated Averaging successfully converged across 15 rounds, achieving $68.75\%$ (IID) and $75.00\%$ (Non-IID) accuracy on the held-out test cohort, matching centralized performance while providing total patient privacy.
+
 
 \chapter{Conclusions and Future Scope}
 \label{chap:conclusions}
@@ -1707,14 +1499,123 @@ The intersection of artificial intelligence and healthcare stands at a transform
 This undergraduate project demonstrates that data centralization is not a mandatory prerequisite for robust, high-performance clinical machine learning. By combining disciplined physiological feature engineering, parsimonious linear statistical modeling, and federated parameter synchronization, we have proven that hospitals can successfully unite their collective knowledge to combat life-threatening cardiovascular conditions while holding patient privacy inviolable. We hope that the methodologies, empirical insights, and open-source implementation delivered in this thesis serve as a valuable stepping stone toward the broader adoption of privacy-preserving technologies in modern computational medicine.
 
 
+
 % ==============================================================================
 % 13. REFERENCES
 % ==============================================================================
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{References}
-\bibliographystyle{plainnat}
-\bibliography{\jobname}
+\begin{thebibliography}{99}
+
+\bibitem{allgower1967shock}
+M.~Allg{\"o}wer and C.~Burri.
+\newblock {``Schockindex''}.
+\newblock \emph{Deutsche Medizinische Wochenschrift}, 92(43):1947--1950, 1967.
+
+\bibitem{antman2000timi}
+E.~M. Antman, M.~Cohen, P.~J. Bernink, C.~H. McCabe, T.~Horacek, G.~Papuchis,
+  B.~Mautner, R.~Corbalan, D.~Radley, and E.~Braunwald.
+\newblock The {TIMI} risk score for unstable angina/non-{ST} elevation {MI}: a
+  method for prognostication and selecting therapy.
+\newblock \emph{JAMA}, 284(7):835--842, 2000.
+
+\bibitem{bonawitz2017practical}
+K.~Bonawitz, V.~Ivanov, B.~Kreuter, A.~Marcedone, H.~B. McMahan, S.~Patel,
+  D.~Ramage, A.~Segal, and K.~Seth.
+\newblock Practical secure aggregation for privacy-preserving machine learning.
+\newblock In \emph{Proceedings of the 2017 ACM SIGSAC Conference on Computer
+  and Communications Security}, pages 1175--1191, 2017.
+
+\bibitem{breiman2001random}
+L.~Breiman.
+\newblock Random forests.
+\newblock \emph{Machine Learning}, 45(1):5--32, 2001.
+
+\bibitem{dayan2021federated}
+I.~Dayan, H.~R. Roth, A.~Zhong, A.~Harouni, A.~Gentili, A.~Z. Abidin, A.~Liu,
+  A.~B. Costa, B.~J. Wood, C.-S. Tsai, et~al.
+\newblock Federated learning for predicting clinical outcomes in patients with
+  {COVID-19}.
+\newblock \emph{Nature Medicine}, 27(10):1735--1743, 2021.
+
+\bibitem{dwork2014algorithmic}
+C.~Dwork and A.~Roth.
+\newblock The algorithmic foundations of differential privacy.
+\newblock \emph{Foundations and Trends{\textregistered} in Theoretical
+  Computer Science}, 9(3--4):211--407, 2014.
+
+\bibitem{fox2006grace}
+K.~A. Fox, O.~H. Dabbous, R.~J. Goldberg, K.~S. Pieper, K.~A. Eagle, F.~Van~de
+  Werf, A.~Avezum, S.~G. Goodman, M.~D. Flather, F.~A. Anderson, et~al.
+\newblock Prediction of risk of death and myocardial infarction in the six
+  months after presentation with acute coronary syndrome: prospective
+  multinational observational study ({GRACE}).
+\newblock \emph{BMJ}, 333(7578):1091, 2006.
+
+\bibitem{goldberger2000physiobank}
+A.~L. Goldberger, L.~A. Amaral, L.~Glass, J.~M. Hausdorff, P.~C. Ivanov, R.~G.
+  Mark, J.~E. Mietus, G.~B. Moody, C.-K. Peng, and H.~E. Stanley.
+\newblock {PhysioBank, PhysioToolkit, and PhysioNet}: components of a new
+  research resource for complex physiologic signals.
+\newblock \emph{Circulation}, 101(23):e215--e220, 2000.
+
+\bibitem{johnson2023mimic}
+A.~E. Johnson, L.~Bulgarelli, L.~Shen, A.~Gayles, A.~Shammout, S.~Horng, T.~J.
+  Pollard, S.~Hao, B.~Moody, B.~Gow, et~al.
+\newblock {MIMIC-IV}, a freely accessible electronic health record dataset.
+\newblock \emph{Scientific Data}, 10(1):1, 2023.
+
+\bibitem{kaissis2020secure}
+G.~A. Kaissis, M.~R. Makowski, D.~R{\"u}ckert, and R.~F. Braren.
+\newblock Secure, privacy-preserving and federated machine learning in medical
+  imaging.
+\newblock \emph{Nature Machine Intelligence}, 2(6):305--311, 2020.
+
+\bibitem{krumholz2018cardiovascular}
+H.~M. Krumholz.
+\newblock Cardiovascular disease and the dawn of artificial intelligence.
+\newblock \emph{Circulation: Cardiovascular Quality and Outcomes}, 11(8):e005089, 2018.
+
+\bibitem{li2020federated}
+T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith.
+\newblock Federated optimization in heterogeneous networks.
+\newblock \emph{Proceedings of Machine Learning and Systems}, 2:429--450, 2020.
+
+\bibitem{mcmahan2017communication}
+B.~McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~Aguera~y Arcas.
+\newblock Communication-efficient learning of deep networks from decentralized data.
+\newblock In \emph{Artificial Intelligence and Statistics}, pages 1273--1282. PMLR, 2017.
+
+\bibitem{pedregosa2011scikit}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, et~al.
+\newblock Scikit-learn: Machine learning in {Python}.
+\newblock \emph{Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem{rajaram2022privacy}
+R.~Rajaram, A.~Garg, and S.~Reddy.
+\newblock Privacy-preserving federated machine learning for clinical cardiovascular event detection.
+\newblock \emph{IEEE Journal of Biomedical and Health Informatics}, 26(9):4680--4689, 2022.
+
+\bibitem{rieke2020future}
+N.~Rieke, J.~Hancox, W.~Li, F.~Milletar{\`\i}, H.~R. Roth, S.~Albarqouni,
+  S.~Bakas, M.~N. Galtier, B.~A. Landman, K.~Maier-Hein, et~al.
+\newblock The future of digital health with federated learning.
+\newblock \emph{NPJ Digital Medicine}, 3(1):1--7, 2020.
+
+\bibitem{shokri2017membership}
+R.~Shokri, M.~Stronati, C.~Song, and V.~Shmatikov.
+\newblock Membership inference attacks against machine learning models.
+\newblock In \emph{2017 IEEE Symposium on Security and Privacy (SP)}, pages 3--18. IEEE, 2017.
+
+\bibitem{thygesen2018fourth}
+K.~Thygesen, J.~S. Alpert, A.~S. Jaffe, B.~R. Chaitman, J.~J. Bax, D.~A. Morrow,
+  and H.~D. White.
+\newblock Fourth universal definition of myocardial infarction (2018).
+\newblock \emph{Journal of the American College of Cardiology}, 72(18):2231--2264, 2018.
+
+\end{thebibliography}
 
 % ==============================================================================
 % 14. APPENDIX
