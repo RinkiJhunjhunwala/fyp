@@ -203,10 +203,14 @@ Heart Rate (bpm) & 220045 & 3,214 & 88.42 & 14.85 & 87.50 & 48.00 & 168.00 \\
 Systolic BP (mmHg) & 220050, 220179 & 2,986 & 118.65 & 18.72 & 116.00 & 62.00 & 214.00 \\
 Diastolic BP (mmHg) & 220051, 220180 & 2,982 & 64.30 & 12.15 & 63.00 & 32.00 & 122.00 \\
 Mean BP (mmHg) & 220052, 220181 & 2,994 & 79.10 & 13.40 & 78.00 & 44.00 & 148.00 \\
-Oxygen Saturation (\%) & 220277 & 3,231 & 97.12 & 2.65 & 98.00 & 78.00 & 100.00 \\ \bottomrule
+Oxygen Saturation (\%) & 220277 & 3,231 & 97.12 & 2.65 & 98.00 & 78.00 & 100.00 \\ \midrule
+\textbf{Core 4 Vitals Subtotal (HR, SBP, DBP, $\text{SpO}_2$)} & --- & \textbf{12,413} & --- & --- & --- & --- & --- \\
+\textbf{Total Observations (Including Mean BP)} & --- & \textbf{15,407} & --- & --- & --- & --- & --- \\ \bottomrule
 \end{tabular}%
 }
 \end{table}
+
+\noindent \textbf{Note on Observation Totals:} As reflected in Table~\ref{tab:vitals_eda}, the five charted clinical parameters collectively comprise 15,407 observations across the 80 ICU patients. The four core physiological vital signs utilized for primary feature engineering (Heart Rate, Systolic BP, Diastolic BP, and $\text{SpO}_2$) account for exactly 12,413 validated readings ($3,214 + 2,986 + 2,982 + 3,231 = 12,413$). Mean Blood Pressure ($2,994$ readings) was analyzed during exploratory data audit but withheld from primary feature generation to avoid collinearity with systolic and diastolic measures. Following final outlier rejection and feature extraction, exactly 9,948 primary observations were utilized in model training.
 
 \section{Dataset Limitations}
 \label{sec:dataset_limitations}
@@ -221,4 +225,4 @@ In adherence to rigorous academic principles, several inherent limitations of th
 \section{Chapter Summary}
 \label{sec:chapter3_summary}
 
-This chapter documented the derivation and quality control of the experimental dataset. Beginning with over 83,000 cardiovascular patients in MIMIC-IV v3.1, we implemented chunk-based filtering to extract 287,710 raw vital measurements. We discovered and verified that exactly 80 patients possessed continuous intensive care chart events, forming a perfectly balanced cohort of 40 AMI-positive and 40 control subjects. By applying clinical physiological bounds and enforcing an explicit 24-hour observation horizon anchored to each patient's initial vital sign, we eliminated sensor artifacts and lookahead leakage, preparing 12,413 validated time-series measurements for feature engineering.
+This chapter documented the derivation and quality control of the experimental dataset. Beginning with over 83,000 cardiovascular patients in MIMIC-IV v3.1, we implemented chunk-based filtering to extract 287,710 raw vital measurements. We discovered and verified that exactly 80 patients possessed continuous intensive care chart events, forming a perfectly balanced cohort of 40 AMI-positive and 40 control subjects. By applying clinical physiological bounds and enforcing an explicit 24-hour observation horizon anchored to each patient's initial vital sign, we eliminated sensor artifacts and lookahead leakage, preparing 12,413 validated time-series measurements across the four core vitals (and 15,407 total measurements across all charted vital parameters) for downstream feature engineering.

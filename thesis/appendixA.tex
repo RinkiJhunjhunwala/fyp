@@ -1,31 +1,35 @@
 \chapter{Biographical Sketch}
 \label{chap:appendix_bio}
 
-\vspace{1.5cm}
+\vspace{1.0cm}
 
 \begin{center}
-    {\large \textbf{Rinki Jhunjhunwala}}\\
+    {\Large \textbf{Rinki Jhunjhunwala}}\\
+    \vspace{0.2cm}
+    Enrollment No.: \textbf{21UEC024}\\
     Department of Computer Science \& Engineering\\
     National Institute of Technology, Agartala\\
     Barjala, Jirania, West Tripura, PIN -- 799046, India\\
     \vspace{0.3cm}
-    \textbf{E-Mail:} rinki.jhunjhunwala@gmail.com\\
-    \textbf{Project Repository:} \url{https://github.com/RinkiJhunjhunwala/fyp}
+    \textbf{Project Supervisor:} Dr. Tribid Debbarma (Assistant Professor)\\
+    \textbf{Head of Department:} Dr. Ashim Saha (Professor)\\
+    \vspace{0.2cm}
+    \textbf{Project GitHub Repository:} \url{https://github.com/RinkiJhunjhunwala/fyp}
 \end{center}
 
 \vspace{1cm}
 
-\noindent \textbf{Academic Profile:}\\
-Rinki Jhunjhunwala is an undergraduate student pursuing the Bachelor of Technology (B.Tech.) degree in Computer Science and Engineering at the National Institute of Technology, Agartala. Her academic and research interests include machine learning, privacy-preserving distributed systems, federated learning, healthcare analytics, and full-stack software engineering.
+\noindent \textbf{Student Academic Profile:}\\
+Rinki Jhunjhunwala is a final-year undergraduate student pursuing the Bachelor of Technology (B.Tech.) degree in Computer Science and Engineering at the National Institute of Technology, Agartala. Her academic coursework and project interests include applied machine learning, distributed computing, federated learning in healthcare, clinical data analysis, and web software development.
 
 \vspace{0.8cm}
 
-\noindent \textbf{Project Contributions:}\\
-In this final year capstone project titled \textit{"Privacy-Preserving Cardiovascular Disease Classification Using Federated Learning"}, Rinki undertook:
+\noindent \textbf{Summary of Project Contributions:}\\
+In this undergraduate capstone project titled \textit{"Privacy-Preserving Cardiovascular Disease Classification Using Federated Learning"}, Rinki carried out the following research and implementation activities:
 \begin{itemize}
-    \item Extraction and cohort curation from the large-scale MIMIC-IV version 3.1 critical care database, analyzing ICD-9/10 billing codes, clinical laboratory events, and timestamped bedside ICU vital sign telemetry.
-    \item Mathematical formulation and software implementation of a leak-free 43-dimensional statistical and temporal feature engineering pipeline over 24-hour observation windows.
-    \item Centralized baseline model benchmark across six traditional machine learning algorithms (Logistic Regression, Random Forest, Decision Tree, Support Vector Classifier, K-Nearest Neighbors, and Gradient Boosting) using 5-fold Stratified Cross-Validation.
-    \item Design and deployment of a multi-hospital Federated Learning simulation implementing the Federated Averaging (FedAvg) protocol under both IID and non-IID client partitions.
-    \item Development of an interactive clinical web application using Flask and Bootstrap, providing real-time risk assessment, transparent feature attribution, and federated model serving.
+    \item \textbf{Clinical Data Processing:} Explored the large-scale MIMIC-IV version 3.1 hospital database, audited candidate admissions, and selected an 80-patient balanced ICU cohort (40 AMI cases and 40 control cases) with zero artificial data synthesis.
+    \item \textbf{Physiological Feature Engineering:} Developed a clean, leak-free feature extraction pipeline that converted continuous, irregular 24-hour vital signs (Heart Rate, Systolic BP, Diastolic BP, and Oxygen Saturation) into 43 tabular statistical, trend, and hemodynamic ratio features per patient.
+    \item \textbf{Centralized Baseline Evaluation:} Built, tuned, and compared six traditional machine learning models (Logistic Regression, Random Forest, Decision Tree, Support Vector Machine, K-Nearest Neighbors, and Gradient Boosting) using 5-fold Stratified Cross-Validation.
+    \item \textbf{Federated Learning Simulation:} Implemented the Federated Averaging (FedAvg) protocol across a simulated three-hospital network, demonstrating that collaborative parameter aggregation rescues small, data-starved hospitals without transferring private patient records.
+    \item \textbf{Web Application Deployment:} Built an interactive, responsive diagnostic web application using Flask, allowing clinicians to perform real-time risk assessment and explore model performance.
 \end{itemize}

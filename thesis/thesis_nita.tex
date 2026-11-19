@@ -1,39 +1,34 @@
 \documentclass{nitathesis}
 
-% Additional packages if needed
 \usepackage{url}
-% % % % % % \usepackage{microtype} (disabled for fast Overleaf compilation) (disabled for fast Overleaf compilation) (disabled for fast Overleaf compilation) (disabled for fast Overleaf compilation) (disabled for fast Overleaf compilation) (disabled for fast Overleaf compilation)
 
 \begin{document}
 
 % ==============================================================================
-% 1. COVER PAGE
+% 1. COVER PAGE (Matching NIT Agartala sample layout)
 % ==============================================================================
 \begin{titlepage}
     \centering
     \vspace*{0.5cm}
     
-    {\Huge\bfseries PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
+    {\Huge\bfseries PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
     
     \vspace{2.2cm}
     
-    \includegraphics[width=4.2cm]{figures/nita_logo.png}
+    \includegraphics[width=4.5cm]{figures/nita_logo.png}
     
     \vspace{2.5cm}
     
-    {\large \textit{A Final Year Project Report Submitted by}\par}
-    \vspace{0.4cm}
-    {\Large \textbf{Rinki Jhunjhunwala}\par}
-    {\large \textbf{(Enrollment No.: 21UEC024)}\par}
+    {\large \textbf{Rinki Jhunjhunwala (21UEC024)}\par}
     
     \vfill
     
-    {\large \textbf{DEPARTMENT OF COMPUTER SCIENCE \& ENGINEERING}\par}
+    {\large \textbf{COMPUTER SCIENCE \& ENGINEERING DEPARTMENT}\par}
     \vspace{0.15cm}
     {\large \textbf{NATIONAL INSTITUTE OF TECHNOLOGY, AGARTALA}\par}
     \vspace{0.15cm}
-    {\normalsize TRIPURA, INDIA -- 799046\par}
-    \vspace{0.3cm}
+    {\normalsize \textbf{INDIA-799046}\par}
+    \vspace{0.25cm}
     {\large \textbf{May, 2026}\par}
     
 \end{titlepage}
@@ -46,37 +41,33 @@
 \begin{center}
     \vspace*{0.5cm}
     
-    {\Huge\bfseries PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
+    {\Huge\bfseries PRIVACY-PRESERVING CARDIOVASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING\par}
     
     \vspace{1.5cm}
     
     {\large \textit{Report submitted to}\par}
+    \vspace{0.15cm}
+    {\large \textbf{National Institute of Technology, Agartala}\par}
+    \vspace{0.15cm}
+    {\large \textit{for the award of the degree}\par}
+    \vspace{0.15cm}
+    {\large \textit{of}\par}
     \vspace{0.2cm}
-    {\Large \textbf{National Institute of Technology, Agartala}\par}
-    \vspace{0.2cm}
-    {\large \textit{for the award of the degree of}\par}
-    \vspace{0.3cm}
     {\Large \textbf{Bachelor of Technology}\par}
-    \vspace{0.2cm}
-    {\large \textit{in}\par}
-    \vspace{0.2cm}
-    {\Large \textbf{Computer Science \& Engineering}\par}
-    
-    \vspace{1.2cm}
+    \vspace{0.8cm}
     
     {\large \textit{by}\par}
     \vspace{0.2cm}
-    {\Large \textbf{Rinki Jhunjhunwala}\par}
-    {\normalsize \textbf{(Enrollment No.: 21UEC024)}\par}
+    {\Large \textbf{Rinki Jhunjhunwala (21UEC024)}\par}
     
-    \vspace{1.2cm}
+    \vspace{1.0cm}
     
     {\large \textit{Under the Guidance of}\par}
     \vspace{0.2cm}
-    {\Large \textbf{Dr. Nirmalya Kar}\par}
-    {\normalsize Associate Professor\par}
-    {\normalsize Department of Computer Science \& Engineering\par}
-    {\normalsize National Institute of Technology, Agartala\par}
+    {\Large \textbf{Dr. Tribid Debbarma}\par}
+    {\normalsize \textbf{Assistant Professor}\par}
+    {\normalsize \textbf{CSE Department}\par}
+    {\normalsize \textbf{NIT Agartala}\par}
     
     \vspace{0.8cm}
     \includegraphics[width=2.5cm]{figures/nita_logo.png}
@@ -84,8 +75,8 @@
     
     \vfill
     
-    {\normalsize \textbf{DEPARTMENT OF COMPUTER SCIENCE \& ENGINEERING}\par}
-    {\normalsize \textbf{NATIONAL INSTITUTE OF TECHNOLOGY, AGARTALA}\par}
+    {\normalsize \textbf{COMPUTER SCIENCE \& ENGINEERING DEPARTMENT}\par}
+    {\normalsize \textbf{NATIONAL INSTITUTE OF TECHNOLOGY AGARTALA}\par}
     {\normalsize \textbf{May, 2026}\par}
 \end{center}
 
@@ -97,11 +88,7 @@
 % 3. DEDICATION
 % ==============================================================================
 \begin{dedication}
-    This thesis is affectionately dedicated to our beloved parents, whose endless sacrifices, unwavering faith, and continuous prayers have been our greatest source of strength throughout this academic journey;\\
-    \vspace{0.8cm}
-    to Prof. Mrinal Kanti Debbarma, Head of Department, and our supervisor Dr. Nirmalya Kar, for their brilliant mentorship, academic wisdom, and patience;\\
-    \vspace{0.8cm}
-    and to all the healthcare professionals and critical-care researchers who work tirelessly to protect human life.
+    This report is dedicated to \textbf{Dr. Ashim Saha}, HOD, CSE Department, NIT Agartala, our Project Supervisor \textbf{Dr. Tribid Debbarma} for sharing his valuable knowledge and encouragement and showing confidence in us all the time, to each of the faculties of the department who contributed to our development as a professional and helped us to achieve this goal, to our parents who supported us and believed in us, and to all those healthcare workers who have somehow contributed to saving human lives.
 \end{dedication}
 
 % ==============================================================================
@@ -125,12 +112,12 @@
 \cleardoublepage
 \thispagestyle{plain}
 \begin{center}
-    \vspace*{0.5in}
+    \vspace*{0.3in}
     {\Large \textbf{REPORT APPROVAL FOR B.TECH}\par}
-    \vspace{1.0in}
+    \vspace{0.8in}
 \end{center}
 
-\noindent This report entitled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, submitted by \textbf{Rinki Jhunjhunwala (Enrollment No.: 21UEC024)}, is approved in partial fulfillment of the requirements for the award of \textbf{Bachelor of Technology} in \textbf{Computer Science \& Engineering}.
+\noindent This report entitled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, by \textbf{Rinki Jhunjhunwala (21UEC024)} is approved in partial fulfilment of the requirements for the award of \textbf{Bachelor of Technology} in \textbf{Computer Science \& Engineering}.
 
 \vspace{3.5in}
 
@@ -138,17 +125,17 @@
 \centering
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cc}
     \rule{6.5cm}{0.4pt} & \rule{6.5cm}{0.4pt} \\
-    \textbf{Dr. Nirmalya Kar} & \textbf{Prof. Mrinal Kanti Debbarma} \\
+    \textbf{Dr. Tribid Debbarma} & \textbf{Dr. Ashim Saha} \\
     (Project Supervisor) & (Head of the Department) \\
-    Associate Professor & Professor \\
-    Department of CSE & Department of CSE \\
-    NIT Agartala & NIT Agartala
+    Assistant Professor & Professor \\
+    Computer Science and Engineering Department & Computer Science and Engineering Department \\
+    NIT, Agartala & NIT Agartala
 \end{tabular*}
 \end{table}
 
-\vspace{1.0cm}
+\vspace{0.8cm}
 \noindent \textbf{Date:} \rule{4cm}{0.4pt}\\
-\noindent \textbf{Place:} NIT Agartala
+\noindent \textbf{Place:} NIT, Agartala
 
 % ==============================================================================
 % 6. CANDIDATE'S DECLARATION
@@ -156,28 +143,24 @@
 \cleardoublepage
 \thispagestyle{plain}
 \begin{center}
-    \vspace*{0.5in}
+    \vspace*{0.3in}
     {\Large \textbf{DECLARATION}\par}
-    \vspace{0.8in}
+    \vspace{0.6in}
 \end{center}
 
-\noindent I declare that the work presented in this project report entitled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, submitted to the Department of Computer Science and Engineering, National Institute of Technology, Agartala, for the award of the degree of \textbf{Bachelor of Technology in Computer Science \& Engineering}, represents my original ideas and research in my own words. Where others' ideas, data, or published findings have been included, they have been adequately cited and referenced according to accepted academic standards.
-
-\vspace{0.4cm}
-\noindent I also declare that I have adhered to all principles of academic honesty and ethical integrity and have not misrepresented, fabricated, or falsified any clinical data, experimental observation, or software code in this submission. I understand that any violation of the above will be cause for disciplinary action by the Institute and may also evoke legal consequences from sources that have not been properly acknowledged.
+\noindent We declare that the work presented in this report titled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, submitted to the \textbf{Computer Science and Engineering Department, NIT Agartala}, for the award of the \textbf{Bachelor of Technology} degree in \textbf{Computer Science \& Engineering}, represents our ideas in our own words and where others' ideas or words have been included, we have adequately cited and referenced the original sources. We also declare that we have adhered to all principles of academic honesty and integrity and have not misrepresented or fabricated or falsified any idea/data/fact/source in our submission. We understand that any violation of the above will be a cause for disciplinary action by the Institute and can also evoke penal action from the sources which have thus not been properly cited or from whom proper permission has not been taken when needed.
 
 \vspace{2.5in}
 
 \begin{flushright}
     \rule{6cm}{0.4pt}\\
     \textbf{Rinki Jhunjhunwala}\\
-    Enrollment No.: 21UEC024\\
-    Department of CSE, NIT Agartala
+    \textbf{(21UEC024)}
 \end{flushright}
 
-\vspace{0.8cm}
+\vspace{0.6cm}
 \noindent \textbf{Date:} May, 2026\\
-\noindent \textbf{Place:} Agartala, India
+\noindent \textbf{Place:} Agartala
 
 % ==============================================================================
 % 7. SUPERVISOR CERTIFICATE
@@ -185,45 +168,38 @@
 \cleardoublepage
 \thispagestyle{plain}
 \begin{center}
-    \vspace*{0.5in}
+    \vspace*{0.3in}
     {\Large \textbf{CERTIFICATE}\par}
     \vspace{0.8in}
 \end{center}
 
-\noindent This is to certify that the work contained in the final year project report entitled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, submitted by \textbf{Rinki Jhunjhunwala (Enrollment No.: 21UEC024)}, has been carried out under my direct supervision and guidance in the Department of Computer Science \& Engineering, National Institute of Technology, Agartala.
+\noindent It is certified that the work contained in the report titled \textbf{``PRIVACY-PRESERVING CARDIO\-VASCULAR DISEASE CLASSIFICATION USING FEDERATED LEARNING''}, by \textbf{Rinki Jhunjhunwala (21UEC024)} has been carried out under my supervision. This work has not been submitted elsewhere for a degree.
 
-\vspace{0.5cm}
-\noindent To the best of my knowledge, this report represents the candidate's authentic research effort and has not been submitted elsewhere for the award of any degree, diploma, or fellowship.
-
-\vspace{3.0in}
+\vspace{3.5in}
 
 \begin{flushright}
     \rule{6.5cm}{0.4pt}\\
-    \textbf{Dr. Nirmalya Kar}\\
-    Associate Professor\\
-    Department of Computer Science \& Engineering\\
-    National Institute of Technology, Agartala\\
-    West Tripura, PIN -- 799046, India
+    \textbf{Dr. Tribid Debbarma}\\
+    Assistant Professor\\
+    Computer Science and Engineering Department\\
+    NIT Agartala
 \end{flushright}
 
 % ==============================================================================
 % 8. ACKNOWLEDGEMENTS
 % ==============================================================================
 \begin{acknowledgements}
-    I wish to express my profound sense of gratitude and respect to my project supervisor, \textbf{Dr. Nirmalya Kar}, Associate Professor, Department of Computer Science \& Engineering, National Institute of Technology, Agartala. His intellectual guidance, continuous encouragement, constructive criticisms, and inspirational attitude provided the foundation upon which this research was conceived and completed.
+    We take this opportunity to express our deep sense of gratitude to all who helped us directly or indirectly during this project work.
 
-    I am deeply indebted to \textbf{Prof. Mrinal Kanti Debbarma}, Head of the Department of Computer Science \& Engineering, for his visionary leadership, support, and for providing the computing infrastructure necessary to conduct high-performance simulations.
+    Firstly, we would like to thank our supervisor, \textbf{Dr. Tribid Debbarma}, Assistant Professor, Department of Computer Science \& Engineering, for being a great mentor and the best advisor we could ever have. His advice, encouragement, and guidance were sources of innovative ideas, inspiration, and the causes behind the successful completion of this report. The confidence shown in us was the biggest source of inspiration for us. It has been a privilege working with him.
 
-    I also convey my sincere thanks to \textbf{Prof. (Dr.) S. K. Patra}, Director, National Institute of Technology, Agartala, for fostering an academic environment dedicated to high-quality technological inquiry and undergraduate research.
+    We are highly obliged to all the faculty members of the Computer Science and Engineering Department for their support and encouragement. We also thank \textbf{Prof.(Dr.) S. K. Patra}, Director, NIT Agartala and \textbf{Dr. Ashim Saha}, H.O.D, CSE Department for providing excellent computing and other facilities without which this work could not achieve its quality goal.
 
-    I extend my heartfelt appreciation to all faculty members, technical officers, and staff of the Computer Science \& Engineering Department for their valuable cooperation throughout my four years of undergraduate study.
-
-    Finally, words fail to express my eternal gratitude to my parents and family members for their boundless love, patient sacrifices, and moral support, which inspired me every day to pursue academic excellence.
+    Finally, we thank our parents and friends who believed in us and supported us through thick and thin.
     
     \vspace{1.5in}
     \begin{flushright}
-        \textbf{Rinki Jhunjhunwala}\\
-        (Enrollment No.: 21UEC024)
+        \textbf{- Rinki Jhunjhunwala (21UEC024)}
     \end{flushright}
 \end{acknowledgements}
 
@@ -251,13 +227,19 @@
     \vspace{0.4in}
 \end{center}
 
-Acute Myocardial Infarction (AMI) remains among the leading global causes of mortality and critical-care admissions. Although machine learning holds tremendous promise for detecting early hemodynamic deterioration patterns from routine physiological monitors, clinical adoption is severely constrained by strict data privacy regulations, including the Health Insurance Portability and Accountability Act (HIPAA), the European General Data Protection Regulation (GDPR), and India's Digital Personal Data Protection (DPDP) Act. These frameworks prohibit the centralized aggregation of identifiable electronic health records across institutional boundaries, creating isolated data silos that limit model generalizability.
+Heart attacks, scientifically known as Acute Myocardial Infarction (AMI), are one of the most common and dangerous medical emergencies around the world. Every year, millions of patients are rushed to intensive care units (ICUs) with severe chest pain and cardiovascular distress. If doctors can catch the early warning signs quickly, patient survival improves drastically. Modern hospitals record vital signs like heart rate, blood pressure, and oxygen saturation continuously by the bedside. In theory, machine learning could analyze these numbers to assist doctors. However, there is a huge roadblock in the real world: \textbf{patient data privacy}. Hospital data is protected by strict laws like HIPAA in the United States, GDPR in Europe, and the DPDP Act in India. Different hospitals are legally forbidden from uploading their raw patient records to a central server or sharing them with each other. As a result, small or rural hospitals with few patients are left with very small datasets, making it impossible for them to build accurate machine learning models on their own.
 
-In this thesis, we propose and validate an end-to-end privacy-preserving framework for cardiovascular disease classification using Federated Learning. Using the Medical Information Mart for Intensive Care IV (MIMIC-IV v3.1) database, we extracted an initial candidate population of 90 patients across ICD-9 (code 410) and ICD-10 (codes I21--I22) cardiovascular cohorts. A rigorous data-integrity inspection revealed that 10 candidate records possessed clinical events recorded strictly outside ICU charted telemetry. Rather than imputing synthetic observations, we established a verified ICU cohort of 80 unique patients symmetrically balanced between AMI-positive and control cases. Over an explicit 24-hour observation window, we engineered 43 statistical, temporal trajectory (ordinary least squares trend slopes), and hemodynamic strain features (Shock Index, Pulse Pressure) from timestamped heart rate, systolic blood pressure, diastolic blood pressure, and oxygen saturation ($\text{SpO}_2$) series.
+In this undergraduate final year project, we design, build, test, and deploy a complete, working solution to this problem using \textbf{Federated Learning}. Using the publicly available MIMIC-IV version 3.1 critical care database, we identified patients admitted with cardiovascular conditions using official medical billing codes (ICD-9 code 410 and ICD-10 codes I21--I22). From an initial set of 90 candidate patients, our careful data audit revealed that 10 patients had readings recorded outside the ICU monitor charts. Rather than guessing or faking data, we filtered our dataset to 80 verified ICU patients, perfectly split into 40 AMI patients and 40 control patients.
 
-We first benchmarked six centralized machine learning models using leak-free 5-fold Stratified Cross-Validation. Demonstrating the critical impact of sample parsimony, a linear Logistic Regression model with $L_2$ regularization outperformed complex non-linear architectures (Random Forest 62.50\%, Gradient Boosting 56.25\%, KNN 50.00\%), achieving a test accuracy of 68.75\%, sensitivity of 75.00\%, and an Area Under the ROC Curve (ROC-AUC) of 0.7188.
+To make this practical for standard machine learning, we took the first 24 hours of routine bedside vital signs---Heart Rate (HR), Systolic Blood Pressure (SBP), Diastolic Blood Pressure (DBP), and Oxygen Saturation ($\text{SpO}_2$)---and transformed them into 43 simple statistical and trend features per patient. This converted thousands of irregular, messy time-series readings into a clean, single-row summary for each patient without any data leakage.
 
-Next, we simulated a distributed healthcare ecosystem across three distinct hospital nodes. We proved that training in isolation within data-scarce community hospitals leads to catastrophic sample-deprivation collapse: Hospital B ($N=16$) collapsed to a test accuracy of 31.25\% with 0.0\% sensitivity. By implementing the Federated Averaging (FedAvg) algorithm, decentralized collaborative training restored global test accuracy to 68.75\% under IID partitioning and 75.00\% under non-IID partitioning without transferring a single raw patient telemetry record outside the hospital perimeter. Finally, we deployed the federated model into an interactive clinical web platform providing real-time inference and risk attribution. This investigation demonstrates that federated learning effectively breaks the data-silo deadlock, democratizing high-performing clinical intelligence for resource-constrained hospitals while guaranteeing strict patient confidentiality.
+We then carried out two major experiments:
+\begin{enumerate}
+    \item \textbf{Centralized Machine Learning Comparison:} We tested six popular algorithms: Logistic Regression, Random Forest, Decision Tree, Support Vector Machine (SVM), K-Nearest Neighbors (KNN), and Gradient Boosting using 5-fold cross-validation. We discovered an important lesson: simpler models worked much better than complex models. Simple regularized Logistic Regression won with \textbf{68.75\% test accuracy and 0.7188 ROC-AUC}, whereas fancy models like Random Forest (62.5\%) and KNN (50.0\%) struggled because they overfit to the small number of patients.
+    \item \textbf{Federated Learning Across Hospitals:} We simulated three separate hospital branches: Hospital A (32 patients), Hospital B (a small rural clinic with only 16 patients), and Hospital C (16 patients). When Hospital B tried to train a model all by itself, it completely failed, collapsing to \textbf{31.25\% accuracy} and failing to catch a single heart attack. But when we connected the three hospitals using the Federated Averaging (FedAvg) algorithm, Hospital B was saved: the federated model reached \textbf{68.75\% accuracy (IID) and 75.00\% accuracy (Non-IID)}, matching the centralized performance while keeping 100\% of raw patient data strictly inside each hospital's local walls.
+\end{enumerate}
+
+Finally, we built a fully working web application using Python and Flask. Doctors or nurses can enter patient vitals, choose between centralized or federated models, and get an instant risk assessment with simple explanations. This report proves that hospitals can safely collaborate and build strong medical AI without compromising patient privacy.
 
 % ==============================================================================
 % 11. TABLE OF CONTENTS
@@ -282,121 +264,12 @@ Next, we simulated a distributed healthcare ecosystem across three distinct hosp
 \include{chapter6}
 
 % ==============================================================================
-% 13. REFERENCES
+% 13. REFERENCES (Inlined for 5-second fast compile)
 % ==============================================================================
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{References}
-\begin{thebibliography}{99}
-
-\bibitem{allgower1967shock}
-M.~Allg{\"o}wer and C.~Burri.
-\newblock {``Schockindex''}.
-\newblock \emph{Deutsche Medizinische Wochenschrift}, 92(43):1947--1950, 1967.
-
-\bibitem{antman2000timi}
-E.~M. Antman, M.~Cohen, P.~J. Bernink, C.~H. McCabe, T.~Horacek, G.~Papuchis,
-  B.~Mautner, R.~Corbalan, D.~Radley, and E.~Braunwald.
-\newblock The {TIMI} risk score for unstable angina/non-{ST} elevation {MI}: a
-  method for prognostication and selecting therapy.
-\newblock \emph{JAMA}, 284(7):835--842, 2000.
-
-\bibitem{bonawitz2017practical}
-K.~Bonawitz, V.~Ivanov, B.~Kreuter, A.~Marcedone, H.~B. McMahan, S.~Patel,
-  D.~Ramage, A.~Segal, and K.~Seth.
-\newblock Practical secure aggregation for privacy-preserving machine learning.
-\newblock In \emph{Proceedings of the 2017 ACM SIGSAC Conference on Computer
-  and Communications Security}, pages 1175--1191, 2017.
-
-\bibitem{breiman2001random}
-L.~Breiman.
-\newblock Random forests.
-\newblock \emph{Machine Learning}, 45(1):5--32, 2001.
-
-\bibitem{dayan2021federated}
-I.~Dayan, H.~R. Roth, A.~Zhong, A.~Harouni, A.~Gentili, A.~Z. Abidin, A.~Liu,
-  A.~B. Costa, B.~J. Wood, C.-S. Tsai, et~al.
-\newblock Federated learning for predicting clinical outcomes in patients with
-  {COVID-19}.
-\newblock \emph{Nature Medicine}, 27(10):1735--1743, 2021.
-
-\bibitem{dwork2014algorithmic}
-C.~Dwork and A.~Roth.
-\newblock The algorithmic foundations of differential privacy.
-\newblock \emph{Foundations and Trends{\textregistered} in Theoretical
-  Computer Science}, 9(3--4):211--407, 2014.
-
-\bibitem{fox2006grace}
-K.~A. Fox, O.~H. Dabbous, R.~J. Goldberg, K.~S. Pieper, K.~A. Eagle, F.~Van~de
-  Werf, A.~Avezum, S.~G. Goodman, M.~D. Flather, F.~A. Anderson, et~al.
-\newblock Prediction of risk of death and myocardial infarction in the six
-  months after presentation with acute coronary syndrome: prospective
-  multinational observational study ({GRACE}).
-\newblock \emph{BMJ}, 333(7578):1091, 2006.
-
-\bibitem{goldberger2000physiobank}
-A.~L. Goldberger, L.~A. Amaral, L.~Glass, J.~M. Hausdorff, P.~C. Ivanov, R.~G.
-  Mark, J.~E. Mietus, G.~B. Moody, C.-K. Peng, and H.~E. Stanley.
-\newblock {PhysioBank, PhysioToolkit, and PhysioNet}: components of a new
-  research resource for complex physiologic signals.
-\newblock \emph{Circulation}, 101(23):e215--e220, 2000.
-
-\bibitem{johnson2023mimic}
-A.~E. Johnson, L.~Bulgarelli, L.~Shen, A.~Gayles, A.~Shammout, S.~Horng, T.~J.
-  Pollard, S.~Hao, B.~Moody, B.~Gow, et~al.
-\newblock {MIMIC-IV}, a freely accessible electronic health record dataset.
-\newblock \emph{Scientific Data}, 10(1):1, 2023.
-
-\bibitem{kaissis2020secure}
-G.~A. Kaissis, M.~R. Makowski, D.~R{\"u}ckert, and R.~F. Braren.
-\newblock Secure, privacy-preserving and federated machine learning in medical
-  imaging.
-\newblock \emph{Nature Machine Intelligence}, 2(6):305--311, 2020.
-
-\bibitem{krumholz2018cardiovascular}
-H.~M. Krumholz.
-\newblock Cardiovascular disease and the dawn of artificial intelligence.
-\newblock \emph{Circulation: Cardiovascular Quality and Outcomes}, 11(8):e005089, 2018.
-
-\bibitem{li2020federated}
-T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith.
-\newblock Federated optimization in heterogeneous networks.
-\newblock \emph{Proceedings of Machine Learning and Systems}, 2:429--450, 2020.
-
-\bibitem{mcmahan2017communication}
-B.~McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~Aguera~y Arcas.
-\newblock Communication-efficient learning of deep networks from decentralized data.
-\newblock In \emph{Artificial Intelligence and Statistics}, pages 1273--1282. PMLR, 2017.
-
-\bibitem{pedregosa2011scikit}
-F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
-  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, et~al.
-\newblock Scikit-learn: Machine learning in {Python}.
-\newblock \emph{Journal of Machine Learning Research}, 12:2825--2830, 2011.
-
-\bibitem{rajaram2022privacy}
-R.~Rajaram, A.~Garg, and S.~Reddy.
-\newblock Privacy-preserving federated machine learning for clinical cardiovascular event detection.
-\newblock \emph{IEEE Journal of Biomedical and Health Informatics}, 26(9):4680--4689, 2022.
-
-\bibitem{rieke2020future}
-N.~Rieke, J.~Hancox, W.~Li, F.~Milletar{\`\i}, H.~R. Roth, S.~Albarqouni,
-  S.~Bakas, M.~N. Galtier, B.~A. Landman, K.~Maier-Hein, et~al.
-\newblock The future of digital health with federated learning.
-\newblock \emph{NPJ Digital Medicine}, 3(1):1--7, 2020.
-
-\bibitem{shokri2017membership}
-R.~Shokri, M.~Stronati, C.~Song, and V.~Shmatikov.
-\newblock Membership inference attacks against machine learning models.
-\newblock In \emph{2017 IEEE Symposium on Security and Privacy (SP)}, pages 3--18. IEEE, 2017.
-
-\bibitem{thygesen2018fourth}
-K.~Thygesen, J.~S. Alpert, A.~S. Jaffe, B.~R. Chaitman, J.~J. Bax, D.~A. Morrow,
-  and H.~D. White.
-\newblock Fourth universal definition of myocardial infarction (2018).
-\newblock \emph{Journal of the American College of Cardiology}, 72(18):2231--2264, 2018.
-
-\end{thebibliography}
+\input{inlined_bib}
 
 % ==============================================================================
 % 14. APPENDIX
